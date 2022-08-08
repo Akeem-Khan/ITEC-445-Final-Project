@@ -3,6 +3,14 @@ import React, { useContext, useState } from "react";
 import { useHistory } from "react-router-dom";
 import AuthContext from "../../context/auth.context";
 
+import Button from '@mui/material/Button';
+import CssBaseline from '@mui/material/CssBaseline';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
 function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -60,68 +68,89 @@ function Register() {
       console.error(err);
     }
   }
-
+  
+  const theme = createTheme();
+  
   return (
-    <div>
-      <h1>Register a new account</h1>
-      <form onSubmit={register}>
-        <div className="form-group">
-          <input
-            className="form-control"
-            type="text"
-            placeholder="Name"
-            onChange={(e) => setName(e.target.value)}
-            value={name}
-            required
-          />
-        </div>
+    <ThemeProvider theme={theme}>
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <Box
+          sx={{
+            marginTop: 8,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Typography component="h1" variant="h5">
+            Register
+          </Typography>
+          <Box component="form" onSubmit={register} noValidate sx={{ mt: 1 }}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="name"
+              label="Name"
+              name="name"
+              autoFocus
 
-        <br/>
+              onChange={(e) => setName(e.target.value)}
+              value={name}
+            />
 
-        <div className="form-group">
-          <input
-            className="form-control"
-            type="email"
-            placeholder="Email"
-            onChange={(e) => setEmail(e.target.value)}
-            value={email}
-            required
-          />
-        </div>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
 
-        <br/>
+              onChange={(e) => setEmail(e.target.value)}
+              value={email}
+            />
 
-        <div className="form-group">
-          <input
-            className="form-control"
-            type="password"
-            placeholder="Password"
-            onChange={(e) => setPassword(e.target.value)}
-            value={password}
-            required
-          />
-        </div>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
 
-        <br/>
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+            />
 
-        <div className="form-group">
-          <input
-            className="form-control"
-            type="password"
-            placeholder="Verify your password"
-            onChange={(e) => setPasswordVerify(e.target.value)}
-            value={passwordVerify}
-            required
-          />
-        </div>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="passwordVerify"
+              label="Verify Password"
+              type="password"
+              id="passwordVerify"
 
-        <br/>
+              onChange={(e) => setPasswordVerify(e.target.value)}
+              value={passwordVerify}
+            />
 
-        <div className="form-group">
-          <button className="btn btn-primary" type="submit">{buttonText}</button>
-        </div>
-      </form>
-    </div>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              {buttonText}
+            </Button>
+          </Box>
+        </Box>
+      </Container>
+    </ThemeProvider>
   );
 }
 
