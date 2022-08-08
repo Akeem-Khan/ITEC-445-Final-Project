@@ -13,9 +13,7 @@ class App extends Component {
   render() {
     return (
       <AuthContextProvider>
-        <div className="container">
-          <Router/>
-        </div>
+        <Router />
       </AuthContextProvider>
     );
   }

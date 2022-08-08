@@ -4,8 +4,12 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 import Login from "./components/auth/login.component";
 import Register from "./components/auth/register.component";
 import Activate from "./components/auth/activate.component";
+import Paper from '@mui/material/Paper';
 
 import Navbar from "./components/layout/nav.layout";
+import Footer from "./components/layout/footer.layout";
+import CssBaseline from '@mui/material/CssBaseline';
+
 import AuthContext from "./context/auth.context";
 
 import CreateNotice from "./components/notice/create-notice.component";
@@ -14,6 +18,7 @@ import NoticeList from "./components/notice/notice-list.component";
 
 import Profile from "./components/auth/profile.component";
 import StudentList from "./components/faculty/confirm-student.component";
+import Container from '@mui/material/Container';
 
 
 function Router() {
@@ -21,43 +26,49 @@ function Router() {
 
     return (
         <BrowserRouter>
-            <Navbar/>
+            <Navbar />
 
-            <Switch>
-                <Route path="/" exact component={NoticeList}/>
-                <Route path="/activate/:token" component={Activate}/>
+            <React.Fragment>
+                <CssBaseline />
+                <Paper square sx={{ pb: '50px' }}>
+                    <Switch>
+                        <Route path="/" exact component={NoticeList} />
+                        <Route path="/activate/:token" component={Activate} />
 
-                {user !== undefined && (
-                    <>
-                        {user.loggedIn === false && (
+                        {user !== undefined && (
                             <>
-                                <Route path="/register">
-                                    <Register/>
-                                </Route>
+                                {user.loggedIn === false && (
+                                    <>
+                                        <Route path="/register">
+                                            <Register />
+                                        </Route>
 
-                                <Route path="/login">
-                                    <Login/>
-                                </Route>
+                                        <Route path="/login">
+                                            <Login />
+                                        </Route>
+                                    </>
+                                )}
+
+                                {((user.role === 'student_leader') || (user.role === 'faculty')) && (
+                                    <>
+                                        <Route path="/edit/:id" component={EditNotice} />
+                                        <Route path="/create" component={CreateNotice} />
+                                    </>
+                                )}
+
+                                {user.loggedIn === true && (
+                                    <Route path="/profile" component={Profile} />
+                                )}
+
+                                {user.role === 'faculty' && (
+                                    <Route path="/confirm" component={StudentList} />
+                                )}
                             </>
                         )}
-
-                        {((user.role === 'student_leader') || (user.role === 'faculty')) && (
-                            <>
-                                <Route path="/edit/:id" component={EditNotice}/>
-                                <Route path="/create" component={CreateNotice}/>
-                            </>
-                        )}
-
-                        {user.loggedIn === true && (
-                            <Route path="/profile" component={Profile}/>
-                        )}
-
-                        {user.role === 'faculty' && (
-                            <Route path="/confirm" component={StudentList}/>
-                        )}
-                    </>
-                )}
-            </Switch>
+                    </Switch>
+                </Paper>
+                <Footer />
+            </React.Fragment>
         </BrowserRouter>
     );
 }
