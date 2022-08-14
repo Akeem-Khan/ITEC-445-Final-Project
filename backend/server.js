@@ -5,6 +5,8 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cookieParser = require("cookie-parser");
+const { addMessage, getChannelMessages } = require("./controllers/message.controller");
+const { channels, addUserToChannel } = require("./controllers/channel.controller");
 
 import noticeRoutes from './routes/notice.route';
 import userRoutes from './routes/user.route';
