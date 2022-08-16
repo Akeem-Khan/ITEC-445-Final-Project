@@ -178,7 +178,7 @@ function Register() {
             </Button>
 
             <GoogleLogin
-            clientId="469455778427-u5sqk662pr4k8foeq3kp88jpo1at818h.apps.googleusercontent.com"
+            clientId="814320907634-pi0cakudbacq6kgasrde76t17r3bdqcc.apps.googleusercontent.com"
             render={(renderProps) => (
               <Button className={classes.googleButton}  color="primary" fullWidth onClick={renderProps.onClick} disabled={renderProps.disabled}  variant="contained" onSubmit={handleSubmit}>
                 Google Sign In
