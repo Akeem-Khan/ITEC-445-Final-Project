@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useContext, useState } from "react";
 import { useHistory } from "react-router-dom";
 import AuthContext from "../../context/auth.context";
-
+import { GoogleLogin } from 'react-google-login';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -10,6 +10,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import useStyles from './styles';
 
 function Register() {
   const [name, setName] = useState("");
@@ -17,10 +18,38 @@ function Register() {
   const [password, setPassword] = useState("");
   const [passwordVerify, setPasswordVerify] = useState("");
   const [role, setRole] = useState("");
+  const [error, setError] = useState(false);
   const [buttonText, setButtonText] = useState("Register");
 
   const { getUser } = useContext(AuthContext);
   const history = useHistory();
+  const classes = useStyles();
+
+  const googleSuccess = async (res) => {
+    const result = res?.profileObj;
+    const token = res?.tokenId;
+
+  
+  };
+
+  const googleError = () => alert('Google Sign In was unsuccessful. Try again later');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError(false);
+    try {
+      const res = await axios.post("/auth/register.component", {
+        name,
+        email,
+        password,
+        passwordVerify,
+       
+      });
+      res.data && window.location.replace("/login.component");
+    } catch (err) {
+      setError(true);
+    }
+  };
 
   async function register(e) {
     e.preventDefault();
@@ -73,7 +102,7 @@ function Register() {
   
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="xs" >
         <CssBaseline />
         <Box
           sx={{
@@ -147,6 +176,18 @@ function Register() {
             >
               {buttonText}
             </Button>
+
+            <GoogleLogin
+            clientId="469455778427-u5sqk662pr4k8foeq3kp88jpo1at818h.apps.googleusercontent.com"
+            render={(renderProps) => (
+              <Button className={classes.googleButton}  color="primary" fullWidth onClick={renderProps.onClick} disabled={renderProps.disabled}  variant="contained" onSubmit={handleSubmit}>
+                Google Sign In
+              </Button>
+            )}
+            onSuccess={googleSuccess}
+            onFailure={googleError}
+            cookiePolicy="single_host_origin"
+          />
           </Box>
         </Box>
       </Container>
