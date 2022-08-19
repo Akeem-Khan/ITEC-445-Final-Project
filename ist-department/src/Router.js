@@ -7,6 +7,7 @@ import Activate from "./components/auth/activate.component";
 
 import Navbar from "./components/layout/nav.layout";
 import AuthContext from "./context/auth.context";
+import Cal from "./components/calender/cal"
 
 import CreateNotice from "./components/notice/create-notice.component";
 import EditNotice from "./components/notice/edit-notice.component";
@@ -38,6 +39,8 @@ function Router() {
                                 <Route path="/login">
                                     <Login/>
                                 </Route>
+
+                               
                             </>
                         )}
 
@@ -49,11 +52,16 @@ function Router() {
                         )}
 
                         {user.loggedIn === true && (
-                            <Route path="/profile" component={Profile}/>
+                            <><Route path="/profile" component={Profile} />
+                              <Route path="/cal" component={Cal} />
+                              </>
+                            
                         )}
 
                         {user.role === 'faculty' && (
-                            <Route path="/confirm" component={StudentList}/>
+                           <> <Route path="/confirm" component={StudentList}/>
+                              <Route path="/cal" component={Cal} />
+                           </>
                         )}
                     </>
                 )}

@@ -32,6 +32,8 @@ function Navbar() {
                                 <li className="navbar-item">
                                     <Link to="/login" className="nav-link">Log in</Link>
                                 </li>
+
+                                
                             </>
                         )}
 
@@ -50,8 +52,12 @@ function Navbar() {
                         {user.loggedIn === true && (
                             <>
                                 <li className="navbar-item">
+                                    <Link to="/cal" className="nav-link"> Booking Calendar</Link>
+                                </li>
+                                <li className="navbar-item">
                                     <LogOutBtn />
                                 </li>
+                                
                                 <li className="navbar-item">
                                     <Link to="/profile" className="nav-link" style={{color: "#2E67FF"}}>&nbsp;{user.name}</Link>
                                 </li>
