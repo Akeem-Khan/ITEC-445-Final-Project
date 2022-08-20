@@ -1,5 +1,5 @@
 import express from 'express';
-import { register, accountActivation, login, logout, loggedIn, update, confirm } from '../controllers/user.controller';
+import { register, accountActivation, login, logout, loggedIn, update, confirm, getAll, getUser } from '../controllers/user.controller';
 
 const router = express.Router();
 
@@ -10,5 +10,7 @@ router.get('/logout', logout);
 router.get('/loggedin', loggedIn);
 router.post('/update/:id', update);
 router.get('/confirm', confirm);
+router.get('/all', getAll);
+router.get('/:id', getUser);
 
 export default router;

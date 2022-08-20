@@ -19,7 +19,8 @@ import NoticeList from "./components/notice/notice-list.component";
 import Profile from "./components/auth/profile.component";
 import StudentList from "./components/faculty/confirm-student.component";
 import Container from '@mui/material/Container';
-
+import Chat from "./components/chat/chat.component";
+import Conversations from "./components/chat/conversations.component";
 
 function Router() {
     const { user } = useContext(AuthContext);
@@ -46,6 +47,9 @@ function Router() {
                                         <Route path="/login">
                                             <Login />
                                         </Route>
+
+
+
                                     </>
                                 )}
 
@@ -57,7 +61,16 @@ function Router() {
                                 )}
 
                                 {user.loggedIn === true && (
-                                    <Route path="/profile" component={Profile} />
+                                    <>
+                                        <Route path="/profile" component={Profile} />
+                                        <Route path="/chat">
+                                            <Chat />
+                                        </Route>
+                                        <Route path="/conversations">
+                                            <Conversations />
+                                        </Route>
+                                    </>
+
                                 )}
 
                                 {user.role === 'faculty' && (
