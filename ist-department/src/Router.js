@@ -7,7 +7,7 @@ import Activate from "./components/auth/activate.component";
 
 import Navbar from "./components/layout/nav.layout";
 import AuthContext from "./context/auth.context";
-import Cal from "./components/calender/cal"
+import Cal from "./components/calender"
 
 import CreateNotice from "./components/notice/create-notice.component";
 import EditNotice from "./components/notice/edit-notice.component";
@@ -15,7 +15,6 @@ import NoticeList from "./components/notice/notice-list.component";
 
 import Profile from "./components/auth/profile.component";
 import StudentList from "./components/faculty/confirm-student.component";
-
 
 function Router() {
     const { user } = useContext(AuthContext);

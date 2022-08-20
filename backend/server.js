@@ -8,6 +8,7 @@ const cookieParser = require("cookie-parser");
 
 import noticeRoutes from './routes/notice.route';
 import userRoutes from './routes/user.route';
+import appointmentRoutes from './routes/appointment.route';
 
 dotenv.config();
 const PORT = process.env.PORT || 4000;
@@ -33,6 +34,7 @@ connection.once('open', function() {
 
 app.use('/notices', noticeRoutes);
 app.use('/auth', userRoutes);
+app.use('/appointment', appointmentRoutes);
 
 app.listen(PORT, function() {
     console.log("Server is running on Port: " + PORT);
