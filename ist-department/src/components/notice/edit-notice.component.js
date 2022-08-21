@@ -39,7 +39,6 @@ export default class EditNotice extends Component {
                         by: response.data.flagged.by,
                     },
                 })
-                console.log("TEST");
             })
             .catch(function(err) {
                 console.log(err)

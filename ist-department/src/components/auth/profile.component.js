@@ -117,7 +117,7 @@ function Profile() {
                                         <div style={{backgroundColor: "#ccc", borderRadius: "5px", padding: "5px"}}>
                                             <h4>{notice.title}</h4>
                                             <p>{notice.text}</p>
-                                            Catrgory: {notice.category}
+                                            Category: {notice.category}
                                             
                                             <br/>
                                             <br/>

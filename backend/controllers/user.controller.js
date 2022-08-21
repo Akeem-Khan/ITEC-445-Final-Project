@@ -35,11 +35,11 @@ const register = async (req, res) => {
         const passwordHash = await bcrypt.hash(password, salt);
 
         const token = jwt.sign({
-                name,
-                email,
-                passwordHash,
-                role
-            },
+            name,
+            email,
+            passwordHash,
+            role
+        },
             process.env.JWT_ACCOUNT_ACTIVATION
         );
 
@@ -53,8 +53,8 @@ const register = async (req, res) => {
                       <p>This email may contain sensitive information</p>
                       <p>http://localhost:3000</p>
                   `,
-          };
-       
+        };
+
         sendEmailWithNodemailer(req, res, emailData);
 
     } catch (err) {
@@ -67,20 +67,20 @@ const register = async (req, res) => {
 
 
 const accountActivation = (req, res) => {
-    const {token} = req.body;
+    const { token } = req.body;
 
     if (token) {
-        jwt.verify(token, process.env.JWT_ACCOUNT_ACTIVATION, async (err, decodedToken) =>{
+        jwt.verify(token, process.env.JWT_ACCOUNT_ACTIVATION, async (err, decodedToken) => {
             if (err) {
-                console.log('JWT account verification error', err); 
+                console.log('JWT account verification error', err);
                 return res.status(401).json({
                     error: 'Expired Link.  Signup again'
                 });
-                
+
             }
 
             // const {name, email, passwordHash, role} = jwt.decode(token);
-            const {name, email, passwordHash, role} = decodedToken;
+            const { name, email, passwordHash, role } = decodedToken;
             const user = new User({
                 name: name,
                 email: email,
@@ -98,10 +98,10 @@ const accountActivation = (req, res) => {
             );
 
             res.cookie("token", token, {
-                    httpOnly: true,
-                    secure: true,
-                    sameSite: "none",
-                }).send();
+                httpOnly: true,
+                secure: true,
+                sameSite: "none",
+            }).send();
         });
 
     }
@@ -191,15 +191,15 @@ const loggedIn = (req, res) => {
     try {
         const token = req.cookies.token;
 
-        if(token) {
+        if (token) {
             jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
-                if(err) {
+                if (err) {
                     console.log(err.message);
                     return res.json(userRes);
                 }
                 else {
                     let user = await User.findById(decodedToken.user);
-                    
+
                     userRes.loggedIn = true;
                     userRes.id = user._id;
                     userRes.name = user.name;
@@ -222,19 +222,27 @@ const loggedIn = (req, res) => {
 
 const update = async (req, res) => {
     const user = await User.findById(req.params.id)
-    
+
     if (!user)
         res.status(404).send('User not found');
-    else{
+    else {
         user.role = req.body.role;
         await user.save();
         res.json(user);
     }
 };
 
+const getUser = async (req, res) => {
+    const user = await User.findById(req.params.id)
+    if (!user)
+        res.status(404).send('User not found');
+    else {
+        res.json(user);
+    }
+};
 
 const confirm = (req, res) => {
-    User.find(function(err, users) {
+    User.find(function (err, users) {
         if (err) {
             console.log(err);
         } else {
@@ -243,4 +251,17 @@ const confirm = (req, res) => {
     });
 };
 
-export {register, accountActivation, login, logout, loggedIn, update, confirm};
+const getAll = (req, res) => {
+    User.find(function (err, users) {
+        if (err) {
+            console.log(err);
+        } else {
+            res.json(users);
+        }
+    });
+};
+
+
+
+
+export { register, accountActivation, login, logout, loggedIn, update, confirm, getAll, getUser };
