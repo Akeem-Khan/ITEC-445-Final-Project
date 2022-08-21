@@ -11,6 +11,7 @@ import Footer from "./components/layout/footer.layout";
 import CssBaseline from '@mui/material/CssBaseline';
 
 import AuthContext from "./context/auth.context";
+import Cal from "./components/calender"
 
 import CreateNotice from "./components/notice/create-notice.component";
 import EditNotice from "./components/notice/edit-notice.component";
@@ -21,6 +22,7 @@ import StudentList from "./components/faculty/confirm-student.component";
 import Container from '@mui/material/Container';
 import Chat from "./components/chat/chat.component";
 import Conversations from "./components/chat/conversations.component";
+
 
 function Router() {
     const { user } = useContext(AuthContext);
@@ -47,6 +49,13 @@ function Router() {
                                         <Route path="/login">
                                             <Login />
                                         </Route>
+                                <Route path="/login">
+                                    <Login/>
+                                </Route>
+
+                               
+                            </>
+                        )}
 
 
 
@@ -77,6 +86,17 @@ function Router() {
                                     <Route path="/confirm" component={StudentList} />
                                 )}
                             </>
+                        {user.loggedIn === true && (
+                            <><Route path="/profile" component={Profile} />
+                              <Route path="/cal" component={Cal} />
+                              </>
+                            
+                        )}
+
+                        {user.role === 'faculty' && (
+                           <> <Route path="/confirm" component={StudentList}/>
+                              <Route path="/cal" component={Cal} />
+                           </>
                         )}
                     </Switch>
                 </Paper>

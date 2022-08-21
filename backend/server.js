@@ -14,7 +14,7 @@ import userRoutes from './routes/user.route';
 import chatRoutes from './routes/chat.route';
 import chatModel from './models/chat.model';
 
-
+import appointmentRoutes from './routes/appointment.route';
 dotenv.config();
 const PORT = process.env.PORT || 4000;
 
@@ -41,6 +41,7 @@ app.use('/notices', noticeRoutes);
 app.use('/auth', userRoutes);
 app.use('/chat', chatRoutes);
 
+app.use('/appointment', appointmentRoutes);
 
 var server = app.listen(PORT, function () {
     console.log("Server is running on Port: " + PORT);
