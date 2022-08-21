@@ -9,7 +9,6 @@ function UsersContextProvider(props) {
     
     async function getUsers() {
         const usersRes = await axios.get(server + 'auth/all')
-        console.log(usersRes)
         setUsers(usersRes.data);
     }
 

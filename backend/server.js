@@ -67,7 +67,6 @@ io.on('connection', (socket) => { // socket object may be used to send specific 
 
             record.messages.push({ text: chat.text, date: chat.date, sender: chat.sender })
             record.save()
-            console.log(record)
             io.emit('message', record);
 
 
@@ -77,6 +76,19 @@ io.on('connection', (socket) => { // socket object may be used to send specific 
 
         // io.emit('message', chat);
     });
+
+    socket.on('new-chat', chat => {
+        let record = new chatModel(chat);
+        record.save()
+            .then(record => {
+                io.emit('message', record);
+            })
+            .catch(err => {
+
+            });
+    });
+
+
 
 
 });

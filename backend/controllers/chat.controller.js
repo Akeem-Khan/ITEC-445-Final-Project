@@ -14,7 +14,6 @@ const getOtherUsers = (chats, id) => {
             }
         })
         chat.otherUserId = otherUserId
-        console.log(chat.otherUserId, otherUserId)
         results.push(chat)
     }
 
