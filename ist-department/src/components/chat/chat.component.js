@@ -35,7 +35,6 @@ import SocketContext from '../../context/socket.context';
 const emails = ['username@gmail.com', 'user02@gmail.com'];
 const server = 'http://localhost:4000/'
 
-
 function NewChatDialog(props) {
     const { onClose, selectedValue, open, users } = props;
     const handleClose = () => {

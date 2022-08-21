@@ -80,7 +80,6 @@ function Router() {
                         )}
                     </Switch>
                 </Paper>
-                <Footer />
             </React.Fragment>
         </BrowserRouter>
     );

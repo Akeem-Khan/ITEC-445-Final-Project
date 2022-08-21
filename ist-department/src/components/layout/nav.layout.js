@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import AuthContext from "../../context/auth.context";
-
+import PersonIcon from '@mui/icons-material/Person';
 import { Link as RouterLink, LinkProps as RouterLinkProps } from 'react-router-dom';
 import LogOutBtn from "../auth/logout-btn.component";
 import logo from "../../logo.png";
@@ -19,7 +19,8 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import Link from '@mui/material/Link';
-
+import { useHistory } from "react-router-dom";
+import axios from "axios";
 function Navbar() {
     const { user } = useContext(AuthContext);
     const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -41,6 +42,15 @@ function Navbar() {
         setAnchorElUser(null);
     };
 
+    const { getUser } = useContext(AuthContext);
+
+    const history = useHistory();
+
+    const logOut = async () => {
+        await axios.get("http://localhost:4000/auth/logout");
+        await getUser();
+        history.push("/");
+    }
     return (
 
         <>
@@ -48,7 +58,7 @@ function Navbar() {
                 <Container maxWidth="xl">
                     <Toolbar disableGutters>
                         {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} /> */}
-                        <Avatar sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} alt="Remy Sharp" src={logo} />
+                        <Avatar sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} alt="IST" src={logo} />
 
                         <Typography
                             variant="h6"
@@ -60,7 +70,6 @@ function Navbar() {
                                 display: { xs: 'none', md: 'flex' },
                                 fontFamily: 'monospace',
                                 fontWeight: 700,
-                                letterSpacing: '.3rem',
                                 color: 'inherit',
                                 textDecoration: 'none',
                             }}
@@ -131,84 +140,14 @@ function Navbar() {
                             LOGO
                         </Typography>
                         <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                            <Button
-                                component={RouterLink} to="/"
-
-                                onClick={handleCloseNavMenu}
-                                sx={{ my: 2, color: 'white', display: 'block' }}
-                            >
-                                Notices
-                            </Button>
-
-
-                            {user !== undefined && (
-                                <>
-                                    {user.loggedIn === false && (
-                                        <>
-                                            <Button
-                                                component={RouterLink} to="/register"
-                                                onClick={handleCloseNavMenu}
-                                                sx={{ my: 2, color: 'white', display: 'block' }}
-                                            >                                                    <Typography textAlign="center">Register</Typography>
-                                            </Button>
-                                            <Button
-                                                component={RouterLink} to="/login"
-
-                                                onClick={handleCloseNavMenu}
-                                                sx={{ my: 2, color: 'white', display: 'block' }}
-                                            >
-                                                <Typography textAlign="center">Login</Typography>
-                                            </Button>
-                                        </>
-                                    )}
-
-                                    {((user.role === 'student_leader') || (user.role === 'faculty')) && (
-                                        <Button
-                                            component={RouterLink} to="/create"
-
-                                            onClick={handleCloseNavMenu}
-                                            sx={{ my: 2, color: 'white', display: 'block' }}
-                                        >
-                                            <Typography textAlign="center">Create Notice</Typography>
-                                        </Button>
-
-                                    )}
-
-                                    {user.role === 'faculty' && (
-                                        <Button
-                                            component={RouterLink} to="/confirm"
-
-                                            onClick={handleCloseNavMenu}
-                                            sx={{ my: 2, color: 'white', display: 'block' }}
-                                        >
-                                            <Typography textAlign="center">Confirm student leader</Typography>
-                                        </Button>
-                                    )}
-
-                                    {user.loggedIn === true && (
-                                        <>
-                                            <LogOutBtn />
-                                            <Button
-                                                component={RouterLink} to="/profile"
-
-                                                onClick={handleCloseNavMenu}
-                                                sx={{ my: 2, color: 'white', display: 'block' }}
-                                            >
-                                                <Typography textAlign="center">{user.name}</Typography>
-                                            </Button>
-                                        </>
-                                    )}
-                                </>
-                            )}
-
-
 
                         </Box>
 
                         <Box sx={{ flexGrow: 0 }}>
                             <Tooltip title="Open settings">
                                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                    <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                                    <Avatar><PersonIcon /></Avatar>
+
                                 </IconButton>
                             </Tooltip>
                             <Menu
@@ -227,72 +166,57 @@ function Navbar() {
                                 open={Boolean(anchorElUser)}
                                 onClose={handleCloseUserMenu}
                             >
-                                {settings.map((setting) => (
-                                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                        <Typography textAlign="center">{setting}</Typography>
-                                    </MenuItem>
-                                ))}
+
+                                {user !== undefined && (
+                                    <>
+                                        {user.loggedIn === false && (
+
+
+                                            <>
+                                                <MenuItem to="/register" component={RouterLink}>
+                                                    <Typography textAlign="center">Register</Typography>
+                                                </MenuItem>
+                                                <MenuItem to="/login" component={RouterLink}>
+                                                    <Typography textAlign="center">Log in</Typography>
+                                                </MenuItem>
+
+                                            </>
+                                        )}
+
+                                        {((user.role === 'student_leader') || (user.role === 'faculty')) && (
+                                            <MenuItem to="/create" component={RouterLink}>
+                                                <Typography textAlign="center">Create Notice</Typography>
+                                            </MenuItem>
+
+                                        )}
+
+                                        {user.role === 'faculty' && (
+                                            <MenuItem to="/confirm" component={RouterLink}>
+                                                <Typography textAlign="center">Confirm student leader</Typography>
+                                            </MenuItem>
+                                        )}
+
+                                        {user.loggedIn === true && (
+                                            <>
+                                                <MenuItem to="/chat" component={RouterLink}>
+                                                    <Typography textAlign="center">Chat</Typography>
+                                                </MenuItem>
+                                                <MenuItem to="/profile" component={RouterLink}>
+                                                    <Typography textAlign="center">My Profile</Typography>
+                                                </MenuItem>
+                                                <MenuItem onClick={logOut}>
+                                                    <Typography textAlign="center">Log Out</Typography>
+                                                </MenuItem>
+
+                                            </>
+                                        )}
+                                    </>
+                                )}
                             </Menu>
                         </Box>
                     </Toolbar>
                 </Container>
             </AppBar>
-
-            <nav className="navbar navbar-expand-lg navbar-light bg-light" style={{ display: "flex", justifyContent: "space-between" }}>
-                <div style={{ textAlign: "left" }}>
-                    <a className="navbar-brand" href="https://www.costaatt.edu.tt" target="_blank">
-                        <img src={logo} width="30" height="30" alt="COSTAATT" />
-                    </a>
-                    <RouterLink to="/" className="navbar-brand">IST - Department</RouterLink>
-                </div>
-
-                <div className="collpase nav-collapse" style={{ textAlign: "right" }}>
-                    <ul className="navbar-nav mr-auto">
-                        <li className="navbar-item">
-                            <RouterLink to="/" className="nav-link">Notices</RouterLink>
-                        </li>
-
-                        {user !== undefined && (
-                            <>
-                                {user.loggedIn === false && (
-                                    <>
-                                        <li className="navbar-item">
-                                            <RouterLink to="/register" className="nav-link">Register</RouterLink>
-                                        </li>
-                                        <li className="navbar-item">
-                                            <RouterLink to="/login" className="nav-link">Log in</RouterLink>
-                                        </li>
-                                    </>
-                                )}
-
-                                {((user.role === 'student_leader') || (user.role === 'faculty')) && (
-                                    <li className="navbar-item">
-                                        <RouterLink to="/create" className="nav-link">Create Notice</RouterLink>
-                                    </li>
-                                )}
-
-                                {user.role === 'faculty' && (
-                                    <li className="navbar-item">
-                                        <RouterLink to="/confirm" className="nav-link">Confirm student leader</RouterLink>
-                                    </li>
-                                )}
-
-                                {user.loggedIn === true && (
-                                    <>
-                                        <li className="navbar-item">
-                                            <LogOutBtn />
-                                        </li>
-                                        <li className="navbar-item">
-                                            <RouterLink to="/profile" className="nav-link" style={{ color: "#2E67FF" }}>&nbsp;{user.name}</RouterLink>
-                                        </li>
-                                    </>
-                                )}
-                            </>
-                        )}
-                    </ul>
-                </div>
-            </nav>
-
         </>
 
     );
