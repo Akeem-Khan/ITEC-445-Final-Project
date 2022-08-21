@@ -6,6 +6,7 @@ import Router from "./Router";
 import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import socketClient from "socket.io-client";
 import { UsersContextProvider } from "./context/users.context";
+import { SocketContextProvider } from "./context/socket.context";
 
 const dotenv = require('dotenv');
 dotenv.config();
@@ -13,7 +14,6 @@ dotenv.config();
 axios.defaults.withCredentials = true;
 
 const SERVER = "http://127.0.0.1:4000";
-
 class App extends Component {
 
   render() {
@@ -24,10 +24,12 @@ class App extends Component {
     return (
       <AuthContextProvider>
         <UsersContextProvider>
+          <SocketContextProvider>
 
-          <Router />
+            <Router />
+          </SocketContextProvider>
+
         </UsersContextProvider>
-
       </AuthContextProvider>
     );
   }

@@ -6,6 +6,9 @@ let Chat = new Schema({
         type: Array,
         required: true
     },
+    messages: {
+        type: Array,
+    },
 });
 
 module.exports = mongoose.model('Chat', Chat);

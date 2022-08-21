@@ -21,6 +21,7 @@ const getOtherUsers = (chats, id) => {
     return results
 }
 
+
 const add = (req, res) => {
     let chat = new Chat(req.body);
     chat.save()
@@ -49,4 +50,16 @@ const getUserChats = (req, res) => {
     });
 };
 
-export { add, getUserChats };
+
+
+const getChats = (req, res) => {
+    Chat.find((err, chats) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.json(chats)
+        }
+    });
+};
+
+export { add, getUserChats, getChats };

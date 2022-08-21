@@ -23,6 +23,7 @@ import { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import AuthContext from "../../context/auth.context";
 import UsersContext from '../../context/users.context';
+import SocketContext from '../../context/socket.context';
 const emails = ['username@gmail.com', 'user02@gmail.com'];
 const server = 'http://localhost:4000/'
 
@@ -78,15 +79,33 @@ function Chat() {
     const { user } = useContext(AuthContext);
     const [chats, setChats] = useState([]);
     const { users } = useContext(UsersContext);
-
+    const { socket } = useContext(SocketContext);
     const [selectedChat, setSelectedChat] = useState(null);
 
+    socket.on('message', record => {
+        console.log(record)
+        axios.get('http://localhost:4000/chat/all/user/' + user.id)
+            .then(response => {
+                let chats = getOtherUsers(response.data)
+                setChats(chats);
+                chats.forEach(chat => {
+                    if (chat._id === record._id) {
+                        setSelectedChat(chat)
+                    }
+                })
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
 
 
-    const getOtherUsers = (chats) => {
+    });
+
+
+    const getOtherUsers = (chatList) => {
         let results = []
-        for (let i = 0; i < chats.length; i++) {
-            let chat = chats[i];
+        for (let i = 0; i < chatList.length; i++) {
+            let chat = chatList[i];
             let otherUserId = ''
             chat.users.forEach(uid => {
                 if (uid != user.id) {
@@ -101,12 +120,15 @@ function Chat() {
     }
 
 
-
     const getUser = (id) => {
         return users.find((userData) => {
-            console.log(userData._id, id)
             return userData._id == id
         })
+    }
+
+    const handleSendMessage = (text) => {
+        console.log(text)
+        socket.emit('send-message', { selectedChat, text, sender: user.id, date: Date.now() });
     }
 
     const selectChat = (chat) => {
@@ -117,12 +139,7 @@ function Chat() {
         setOpen(true);
     };
 
-    useEffect(() => {
-        const usersRes = axios.get(server + 'auth/all').then(usersRes=>{
-            console.log(usersRes)
-        })
-        
-
+    const getChats = () => {
         axios.get('http://localhost:4000/chat/all/user/' + user.id)
             .then(response => {
                 let chats = getOtherUsers(response.data)
@@ -132,6 +149,15 @@ function Chat() {
             .catch(function (error) {
                 console.log(error);
             })
+    }
+
+    useEffect(() => {
+        const usersRes = axios.get(server + 'auth/all').then(usersRes => {
+            console.log(usersRes)
+        })
+
+
+        getChats()
 
 
 
@@ -163,7 +189,7 @@ function Chat() {
                                 chats && chats.map(chat => {
                                     return (
 
-                                        <Conversation name={chat.otherUser.name} key={chat._id}>
+                                        <Conversation name={chat.otherUser.name} key={chat._id} onClick={() => selectChat(chat)}>
                                         </Conversation>
                                     )
                                 })
@@ -188,8 +214,7 @@ function Chat() {
 
                                 <ChatContainer>
                                     <ConversationHeader>
-                                        <Avatar name="Emily" />
-                                        <ConversationHeader.Content userName="Emily" info="Active 10 mins ago" />
+                                        <ConversationHeader.Content userName={selectedChat.otherUser.name} />
                                     </ConversationHeader>
                                     <MessageList typingIndicator={<TypingIndicator content="Emily is typing" />}>
                                         <MessageSeparator content="Saturday, 30 November 2019" />
@@ -201,7 +226,6 @@ function Chat() {
                                             direction: "incoming",
                                             position: "single"
                                         }}>
-                                            <Avatar name={"Emily"} />
                                         </Message>
                                         <Message model={{
                                             message: "Hello my friend",
@@ -210,170 +234,25 @@ function Chat() {
                                             direction: "outgoing",
                                             position: "single"
                                         }} />
-                                        <Message model={{
-                                            message: "Hello my friend",
-                                            sentTime: "15 mins ago",
-                                            sender: "Emily",
-                                            direction: "incoming",
-                                            position: "first"
-                                        }} avatarSpacer />
-                                        <Message model={{
-                                            message: "Hello my friend",
-                                            sentTime: "15 mins ago",
-                                            sender: "Emily",
-                                            direction: "incoming",
-                                            position: "normal"
-                                        }} avatarSpacer />
-                                        <Message model={{
-                                            message: "Hello my friend",
-                                            sentTime: "15 mins ago",
-                                            sender: "Emily",
-                                            direction: "incoming",
-                                            position: "normal"
-                                        }} avatarSpacer />
-                                        <Message model={{
-                                            message: "Hello my friend",
-                                            sentTime: "15 mins ago",
-                                            sender: "Emily",
-                                            direction: "incoming",
-                                            position: "last"
-                                        }}>
-                                            <Avatar name={"Emily"} />
-                                        </Message>
-                                        <Message model={{
-                                            message: "Hello my friend",
-                                            sentTime: "15 mins ago",
-                                            direction: "outgoing",
-                                            position: "first"
-                                        }} />
-                                        <Message model={{
-                                            message: "Hello my friend",
-                                            sentTime: "15 mins ago",
-                                            direction: "outgoing",
-                                            position: "normal"
-                                        }} />
-                                        <Message model={{
-                                            message: "Hello my friend",
-                                            sentTime: "15 mins ago",
-                                            direction: "outgoing",
-                                            position: "normal"
-                                        }} />
-                                        <Message model={{
-                                            message: "Hello my friend",
-                                            sentTime: "15 mins ago",
-                                            direction: "outgoing",
-                                            position: "last"
-                                        }} />
 
-                                        <Message model={{
-                                            message: "Hello my friend",
-                                            sentTime: "15 mins ago",
-                                            sender: "Emily",
-                                            direction: "incoming",
-                                            position: "first"
-                                        }} avatarSpacer />
-                                        <Message model={{
-                                            message: "Hello my friend",
-                                            sentTime: "15 mins ago",
-                                            sender: "Emily",
-                                            direction: "incoming",
-                                            position: "last"
-                                        }}>
-                                            <Avatar name={"Emily"} />
-                                        </Message>
+                                        {
+                                            selectedChat.messages && selectedChat.messages.map(message => {
+                                                return (
 
-                                        <MessageSeparator content="Saturday, 31 November 2019" />
+                                                    <Message model={{
+                                                        message: message.text,
+                                                        direction: message.sender == user.id ? 'outgoing' : 'incoming',
+                                                    }} key={message.date} />
+                                                )
+                                            })
+                                        }
 
-                                        <Message model={{
-                                            message: "Hello my friend",
-                                            sentTime: "15 mins ago",
-                                            sender: "Emily",
-                                            direction: "incoming",
-                                            position: "single"
-                                        }}>
-                                            <Avatar name={"Emily"} />
-                                        </Message>
-                                        <Message model={{
-                                            message: "Hello my friend",
-                                            sentTime: "15 mins ago",
-                                            sender: 'Me',
-                                            direction: "outgoing",
-                                            position: "single"
-                                        }} />
-                                        <Message model={{
-                                            message: "Hello my friend",
-                                            sentTime: "15 mins ago",
-                                            sender: "Emily",
-                                            direction: "incoming",
-                                            position: "first"
-                                        }} avatarSpacer />
-                                        <Message model={{
-                                            message: "Hello my friend",
-                                            sentTime: "15 mins ago",
-                                            sender: "Emily",
-                                            direction: "incoming",
-                                            position: "normal"
-                                        }} avatarSpacer />
-                                        <Message model={{
-                                            message: "Hello my friend",
-                                            sentTime: "15 mins ago",
-                                            sender: "Emily",
-                                            direction: "incoming",
-                                            position: "normal"
-                                        }} avatarSpacer />
-                                        <Message model={{
-                                            message: "Hello my friend",
-                                            sentTime: "15 mins ago",
-                                            sender: "Emily",
-                                            direction: "incoming",
-                                            position: "last"
-                                        }}>
-                                            <Avatar name={"Emily"} />
-                                        </Message>
-                                        <Message model={{
-                                            message: "Hello my friend",
-                                            sentTime: "15 mins ago",
-                                            direction: "outgoing",
-                                            position: "first"
-                                        }} />
-                                        <Message model={{
-                                            message: "Hello my friend",
-                                            sentTime: "15 mins ago",
-                                            direction: "outgoing",
-                                            position: "normal"
-                                        }} />
-                                        <Message model={{
-                                            message: "Hello my friend",
-                                            sentTime: "15 mins ago",
-                                            direction: "outgoing",
-                                            position: "normal"
-                                        }} />
-                                        <Message model={{
-                                            message: "Hello my friend",
-                                            sentTime: "15 mins ago",
-                                            direction: "outgoing",
-                                            position: "last"
-                                        }} />
 
-                                        <Message model={{
-                                            message: "Hello my friend",
-                                            sentTime: "15 mins ago",
-                                            sender: "Emily",
-                                            direction: "incoming",
-                                            position: "first"
-                                        }} avatarSpacer />
-                                        <Message model={{
-                                            message: "Hello my friend",
-                                            sentTime: "15 mins ago",
-                                            sender: "Emily",
-                                            direction: "incoming",
-                                            position: "last"
-                                        }}>
-                                            <Avatar name={"Emily"} />
-                                        </Message>
+
+
 
                                     </MessageList>
-                                    <MessageInput placeholder="Type message here" />
+                                    <MessageInput placeholder="Type message here" onSend={handleSendMessage} />
                                 </ChatContainer>
                             )
 

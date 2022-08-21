@@ -12,6 +12,7 @@ var io = require('socket.io')(http);
 import noticeRoutes from './routes/notice.route';
 import userRoutes from './routes/user.route';
 import chatRoutes from './routes/chat.route';
+import chatModel from './models/chat.model';
 
 
 dotenv.config();
@@ -53,7 +54,29 @@ var io = require('socket.io')(server, {
     }
 });
 
-io.on('connection', (socket) => { /* socket object may be used to send specific messages to the new connected client */
+
+
+io.on('connection', (socket) => { // socket object may be used to send specific messages to the new connected client
     console.log('new client connected');
     socket.emit('connection', null);
+    socket.on('send-message', chat => {
+        chatModel.findById(chat.selectedChat._id, (err, record) => {
+            if (record.messages == undefined) {
+                record.messages = []
+            }
+
+            record.messages.push({ text: chat.text, date: chat.date, sender: chat.sender })
+            record.save()
+            console.log(record)
+            io.emit('message', record);
+
+
+
+
+        })
+
+        // io.emit('message', chat);
+    });
+
+
 });
