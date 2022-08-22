@@ -102,7 +102,7 @@ function NoticeList() {
                                                             )}
 
                                                             {!notice.flagged.is_flagged && (
-                                                                <Button size="small" onClick={() => flag(notice)}>Flag</Button>
+                                                                <Button size="small" onClick={() => flag(notice)} color="error">Flag</Button>
                                                             )}
 
                                                         </>
