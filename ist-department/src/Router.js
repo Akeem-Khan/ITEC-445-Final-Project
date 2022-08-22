@@ -33,7 +33,7 @@ function Router() {
 
             <React.Fragment>
                 <CssBaseline />
-                <Paper>
+                <Container>
                     <Switch>
                         <Route path="/" exact component={NoticeList} />
                         <Route path="/activate/:token" component={Activate} />
@@ -86,7 +86,7 @@ function Router() {
 
 
                     </Switch>
-                </Paper>
+                </Container>
             </React.Fragment>
         </BrowserRouter >
     );
