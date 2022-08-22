@@ -49,11 +49,6 @@ function Router() {
                                         <Route path="/login">
                                             <Login />
                                         </Route>
-                                        <Route path="/login">
-                                            <Login />
-                                        </Route>
-
-
                                     </>
                                 )}
 
@@ -86,15 +81,6 @@ function Router() {
                                         <Route path="/cal" component={Cal} />
                                     </>
                                 )}
-
-                                {user.role === 'faculty' && (
-                                    <> <Route path="/confirm" component={StudentList} />
-                                        <Route path="/cal" component={Cal} />
-                                    </>
-                                )}
-
-
-
                             </>
                         )}
 

@@ -5,14 +5,11 @@ import {
     MessageList,
     Message,
     MessageInput,
-    TypingIndicator,
-    MessageSeparator,
     Conversation,
     ConversationList
 } from '@chatscope/chat-ui-kit-react';
 import PersonIcon from '@mui/icons-material/Person';
 import {
-    Grid,
     Paper, 
     Button, 
     Dialog, 
@@ -23,7 +20,7 @@ import {
     ListItemText, 
     Toolbar, 
     Box
-} from '@mui/material'; // Grid version 1
+} from '@mui/material';
 import PropTypes from 'prop-types';
 import AddIcon from '@mui/icons-material/Add';
 import * as React from 'react';
@@ -34,7 +31,6 @@ import UsersContext from '../../context/users.context';
 import SocketContext from '../../context/socket.context';
 const emails = ['username@gmail.com', 'user02@gmail.com'];
 const server = 'http://localhost:4000/'
-
 function NewChatDialog(props) {
     const { onClose, selectedValue, open, users } = props;
     const handleClose = () => {
@@ -63,8 +59,8 @@ function NewChatDialog(props) {
             </List>
         </Dialog>
     );
-}
 
+}
 
 NewChatDialog.propTypes = {
     onClose: PropTypes.func.isRequired,
@@ -165,14 +161,11 @@ function Chat() {
         setOpen(false);
         try {
             let newChat = { users: [user.id, value._id] }
-            // await axios.post('http://localhost:4000/chat/add', newChat);
             socket.emit('new-chat', newChat);
             getChats()
         } catch {
 
         }
-
-        // setSelectedValue(value);
     };
 
     return (
