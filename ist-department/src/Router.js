@@ -49,14 +49,9 @@ function Router() {
                                         <Route path="/login">
                                             <Login />
                                         </Route>
-                                <Route path="/login">
-                                    <Login/>
-                                </Route>
-
-                               
-                            </>
-                        )}
-
+                                        <Route path="/login">
+                                            <Login />
+                                        </Route>
 
 
                                     </>
@@ -85,23 +80,29 @@ function Router() {
                                 {user.role === 'faculty' && (
                                     <Route path="/confirm" component={StudentList} />
                                 )}
+
+                                {user.loggedIn === true && (
+                                    <><Route path="/profile" component={Profile} />
+                                        <Route path="/cal" component={Cal} />
+                                    </>
+                                )}
+
+                                {user.role === 'faculty' && (
+                                    <> <Route path="/confirm" component={StudentList} />
+                                        <Route path="/cal" component={Cal} />
+                                    </>
+                                )}
+
+
+
                             </>
-                        {user.loggedIn === true && (
-                            <><Route path="/profile" component={Profile} />
-                              <Route path="/cal" component={Cal} />
-                              </>
-                            
                         )}
 
-                        {user.role === 'faculty' && (
-                           <> <Route path="/confirm" component={StudentList}/>
-                              <Route path="/cal" component={Cal} />
-                           </>
-                        )}
+
                     </Switch>
                 </Paper>
             </React.Fragment>
-        </BrowserRouter>
+        </BrowserRouter >
     );
 }
 

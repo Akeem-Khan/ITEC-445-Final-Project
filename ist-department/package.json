@@ -25,12 +25,10 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "socket.io-client": "^4.5.1",
-    "web-vitals": "^1.1.2"
     "web-vitals": "^1.1.2",
     "@devexpress/dx-react-core": "^3.0.4",
     "@devexpress/dx-react-scheduler": "^3.0.4",
     "@devexpress/dx-react-scheduler-material-ui": "^3.0.4",
-    "@mui/icons-material": "^5.8.4",
     "@mui/lab": "^5.0.0-alpha.95",
     "@mui/x-date-pickers": "^5.0.0-beta.6",
     "date-fns": "^2.29.2",
