@@ -29,7 +29,7 @@ function Register() {
     const result = res?.profileObj;
     const token = res?.tokenId;
 
-  
+
   };
 
   const googleError = () => alert('Google Sign In was unsuccessful. Try again later');
@@ -43,7 +43,7 @@ function Register() {
         email,
         password,
         passwordVerify,
-       
+
       });
       res.data && window.location.replace("/login.component");
     } catch (err) {
@@ -56,32 +56,32 @@ function Register() {
     const isValidEmail = email.split('@');
 
     try {
-      if(isValidEmail[1] === 'my.costaatt.edu.tt' || isValidEmail[1] === 'gmail.com'){
+      if (isValidEmail[1] === 'my.costaatt.edu.tt' || isValidEmail[1] === 'gmail.com') {
         const registerData = {
           name,
           email,
           password,
           passwordVerify,
-          role:'student',
+          role: 'student',
         };
 
         await axios.post("http://localhost:4000/auth/", registerData);
         await getUser();
 
         setButtonText("Email Sent");
-        
+
         setTimeout(() => {
           history.push('/');
         }, 5000);
       }
-      
-      else if(isValidEmail[1] === 'costaatt.edu.tt'){
+
+      else if (isValidEmail[1] === 'costaatt.edu.tt') {
         const registerData = {
           name,
           email,
           password,
           passwordVerify,
-          role:'faculty',
+          role: 'faculty',
         };
 
         await axios.post("http://localhost:4000/auth/", registerData);
@@ -97,9 +97,9 @@ function Register() {
       console.error(err);
     }
   }
-  
+
   const theme = createTheme();
-  
+
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs" >

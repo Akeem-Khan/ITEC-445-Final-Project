@@ -1,10 +1,16 @@
-import React, {useState, useContext, useEffect} from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import AuthContext from "../../context/auth.context";
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+
+import CardActions from '@mui/material/CardActions';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
 
 
-function useForceUpdate(){
+function useForceUpdate() {
     const [value, setValue] = useState(0); // integer state
     return () => setValue(value => value + 1); // update the state to force render
 }
@@ -27,79 +33,94 @@ function NoticeList() {
     }, []);
 
 
-    function flag(notice){
+    function flag(notice) {
         notice.flagged.is_flagged = true;
         notice.flagged.info = `This post was removed by ${user.name}. You can contact this person with the following: ${user.email}`;
         notice.flagged.by = user.email;
 
-        axios.post('http://localhost:4000/notices/update/'+notice._id, notice)
+        axios.post('http://localhost:4000/notices/update/' + notice._id, notice)
             .then(res => console.log(res.data));
 
         forceUpdate();
     }
 
 
-    function unFlag(notice){
+    function unFlag(notice) {
         notice.flagged.is_flagged = false;
         notice.flagged.info = '';
         notice.flagged.by = '';
 
-        axios.post('http://localhost:4000/notices/update/'+notice._id, notice)
+        axios.post('http://localhost:4000/notices/update/' + notice._id, notice)
             .then(res => console.log(res.data));
 
         forceUpdate();
     }
-    
+
 
     return (
         <div>
-            <h3>Notices</h3>
-            {
-                notices && notices.map(notice => {
-                    return (
-                        <>
-                            <div style={{backgroundColor: "#ccc", borderRadius: "5px", padding: "5px"}}>
-                                <h4>{notice.title}</h4>
-
-                                {notice.flagged.is_flagged && (
-                                    <p>{notice.flagged.info}</p>
-                                )}
-
-                                {!notice.flagged.is_flagged && (
-                                    <p>{notice.text}</p>
-                                )}
-                                
-                                Author: {notice.author} &nbsp; Catrgory: {notice.category}
-                                <br/>
-
-                                {user !== undefined && (
-                                    <>
-                                        <br/>
-                                        {user.email === notice.author && (user.role === 'student_leader' || user.role === 'faculty') && (
-                                            <Link to={"/edit/"+notice._id}><button className="btn btn-primary">Edit</button></Link>
-                                        )}
-
-                                        {user.role === 'faculty' && user.email !== notice.author && (
-                                            <>
+            <Card className='mb-2'>
+                <CardContent>
+                    <Typography variant="h4" component="div">
+                        Notices
+                    </Typography>
+                    {
+                        notices && notices.map(notice => {
+                            return (
+                                <>
+                                    <Card className='mb-2'>
+                                        <CardContent>
+                                            <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                                Author: {notice.author} &nbsp; Category: {notice.category}
+                                            </Typography>
+                                            <Typography variant="h5" component="div">
+                                                {notice.title}
+                                            </Typography>
+                                            <Typography variant="body2">
                                                 {notice.flagged.is_flagged && (
-                                                    <button onClick={() => unFlag(notice)} className="btn btn-danger">Remove Flag</button>
+                                                    <span>{notice.flagged.info}</span>
                                                 )}
 
                                                 {!notice.flagged.is_flagged && (
-                                                    <button onClick={() => flag(notice)} className="btn btn-danger">Flag</button>
+                                                    <p>{notice.text}</p>
                                                 )}
-                                                
-                                            </>
-                                            
-                                        )}
-                                    </>
-                                )}      
-                            </div>
-                            <br/>
-                        </>
-                    )
-                })
-            }
+                                            </Typography>
+                                        </CardContent>
+                                        <CardActions>
+                                            {user !== undefined && (
+                                                <>
+                                                    <br />
+                                                    {user.email === notice.author && (user.role === 'student_leader' || user.role === 'faculty') && (
+                                                        <Button size="small" to={"/edit/" + notice._id} component={Link}>Edit</Button>
+                                                    )}
+
+                                                    {user.role === 'faculty' && user.email !== notice.author && (
+                                                        <>
+
+                                                            {notice.flagged.is_flagged && (
+                                                                <Button size="small" onClick={() => unFlag(notice)}>Remove Flag</Button>
+                                                            )}
+
+                                                            {!notice.flagged.is_flagged && (
+                                                                <Button size="small" onClick={() => flag(notice)}>Flag</Button>
+                                                            )}
+
+                                                        </>
+
+                                                    )}
+                                                </>
+                                            )}
+                                        </CardActions>
+                                    </Card>
+
+                                </>
+                            )
+                        })
+                    }
+                </CardContent>
+
+            </Card>
+
         </div>
     )
 }
