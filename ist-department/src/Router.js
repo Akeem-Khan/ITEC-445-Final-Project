@@ -33,7 +33,7 @@ function Router() {
 
             <React.Fragment>
                 <CssBaseline />
-                <Paper square sx={{ pb: '50px' }}>
+                <Paper>
                     <Switch>
                         <Route path="/" exact component={NoticeList} />
                         <Route path="/activate/:token" component={Activate} />
