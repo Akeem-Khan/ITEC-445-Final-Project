@@ -20,19 +20,28 @@ const getAppointment = async (req,res) => {
    }
 }
 
+// const getAllFacultyAppointments = async (req, res) => {
+//     try {
+//     const owner = await UserModel.findById(req.params.userId);
+//      const allAppointments = await AppointmentModel.find({}).populate('owner').exec();
+//      const result = allAppointments.map((appointment)=>{
+//         if(appointment.owner.role == owner.role) {
+//             return appointment;
+//         }
+//      })
+//      res.status(200).json({result: result, message: 'All Faculty Appointments retrieved successfully'})
+
+//     } catch (err) {
+//         res.status(400).send(err.message);
+//     }
+// }
+
 const getAllFacultyAppointments = async (req, res) => {
     try {
-    const owner = await UserModel.findById(req.params.userId);
-     const allAppointments = await AppointmentModel.find({}).populate('owner').exec();
-     const result = allAppointments.map((appointment)=>{
-        if(appointment.owner.role == owner.role) {
-            return appointment;
-        }
-     })
-     res.status(200).json({result: result, message: 'All Faculty Appointments retrieved successfully'})
-
+     const result = await AppointmentModel.find({})
+     res.status(200).json({result: result, message: 'All user appointments retrieved successfully'});
     } catch (err) {
-        res.status(400).send(err.message);
+ res.status(400).send(err.message);
     }
 }
 
