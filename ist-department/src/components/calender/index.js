@@ -152,21 +152,19 @@ class Calendar extends Component {
       async fetchForAppointments(){
         const { user } = this.context 
         try{
-          if(user.role === 'student'){
-              const appointments = await axios.get(`http://localhost:4000/appointment/getAllAppointmentByOwner/${user.id}`);
-              console.log(appointments);
-              this.setState({
-                user: user,
-                  data: appointments.data.result
-              });
-          } else {
-              const appointments = await axios.get(`http://localhost:4000/appointment/getAllFacultyAppointments/${user.id}`)
+          if(user.role === 'faculty'){
+            const appointments = await axios.get(`http://localhost:4000/appointment/getAllFacultyAppointments/${user.id}`)
                this.setState({
                   user: user,
                   data: appointments.data.result
               });
-               
-              
+          } else {
+            const appointments = await axios.get(`http://localhost:4000/appointment/getAllAppointmentByOwner/${user.id}`);
+            console.log(appointments);
+            this.setState({
+              user: user,
+                data: appointments.data.result
+            });
           }
          console.log('Component did mount')
   

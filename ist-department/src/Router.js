@@ -77,7 +77,7 @@ function Router() {
                                 )}
 
                                 {user.loggedIn === true && (
-                                    <><Route path="/profile" component={Profile} />
+                                    <>
                                         <Route path="/cal" component={Cal} />
                                     </>
                                 )}
