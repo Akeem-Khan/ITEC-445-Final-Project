@@ -5,6 +5,15 @@ import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import Input from '@mui/material/Input';
 export default class EditNotice extends Component {
 
     constructor(props) {
@@ -15,7 +24,7 @@ export default class EditNotice extends Component {
         this.onChangeCategory = this.onChangeCategory.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this.onDelete = this.onDelete.bind(this);
-
+        this.theme = createTheme();
         this.state = {
             title: '',
             text: '',
@@ -27,6 +36,13 @@ export default class EditNotice extends Component {
                 by: '',
             },
         }
+
+        this.categories = ["BSc Computer Information Systems", "BSc Information and Library Science", "BSc Information Technology", "BSc Internet Technology", "BSc Networking",
+            "AAS Information Systems Development", "AAS Internet Technology", "AAS Library and Information Studies", "AAS Operating Systems Management", "CISCO Certified Network Associate - CCNA",
+            "Certificate in Records Management", "Certificate in Records Management for the Public Sector"
+        ]
+
+
     }
 
     componentDidMount() {
@@ -99,74 +115,70 @@ export default class EditNotice extends Component {
 
     render() {
         return (
-            <Card className='mb-2'>
-                <CardContent>
-                    <Typography variant="h4" component="div">
-                        Update Notice
-                    </Typography>
-                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                        Author: {this.state.author}
-                    </Typography>
+            <ThemeProvider theme={this.theme}>
+                <Card className='mb-2'>
+                    <CardContent>
+                        <Typography variant="h4" component="div">
+                            Update Notice
+                        </Typography>
+                        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                            Author: {this.state.author} -                         {this.state.flagged.is_flagged && (
+                                <>
+                                    Warning {this.state.flagged.info}, changes will be saved but not displayed.
+                                </>
+                            )}
+                        </Typography>
 
-                    <form onSubmit={this.onSubmit}>
-                        <div className="form-group">
-                            <label>Title: </label>
-                            <input
-                                type="text"
-                                className="form-control"
+                        <form>
+                            <TextField
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="title"
+                                label="Title"
+                                name="title"
+                                autoFocus
+                                onChange={(e) => this.onChangeTitle(e.target.value)}
                                 value={this.state.title}
-                                onChange={this.onChangeTitle}
-                                required
                             />
-                        </div>
-
-                        <div className="form-group">
-                            <label>Text: </label>
-                            <input
-                                type="text"
-                                className="form-control"
+                            <TextField
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="text"
+                                label="Text"
+                                name="text"
+                                autoFocus
+                                onChange={(e) => this.onChangeText(e.target.value)}
                                 value={this.state.text}
-                                onChange={this.onChangeText}
-                                required
                             />
-                        </div>
 
-                        <div className="form-group">
-                            <label>Category: </label>
-                            <br />
-                            <select value={this.state.category} onChange={this.onChangeCategory}>
-                                <option value="BSc Computer Information Systems">BSc Computer Information Systems</option>
-                                <option value="BSc Information and Library Science">BSc Information and Library Science</option>
-                                <option value="BSc Information Technology">BSc Information Technology</option>
-                                <option value="BSc Internet Technology">BSc Internet Technology</option>
-                                <option value="BSc Networking">BSc Networking</option>
-                                <option value="AAS Information Systems Development">AAS Information Systems Development</option>
-                                <option value="AAS Information Technology">AAS Information Technology</option>
-                                <option value="AAS Internet Technology">AAS Internet Technology</option>
-                                <option value="AAS Library and Information Studies">AAS Library and Information Studies</option>
-                                <option value="AAS Operating Systems Management">AAS Operating Systems Management</option>
-                                <option value="CISCO Certified Network Associate - CCNA">CISCO Certified Network Associate - CCNA</option>
-                                <option value="Certificate in Records Management">Certificate in Records Management</option>
-                                <option value="Certificate in Records Management for the Public Sector">Certificate in Records Management for the Public Sector</option>
-                            </select>
-                        </div>
-                        <br />
-                        <div className="form-group">
-                            <input type="submit" value="Submit" className="btn btn-primary" />
-                            &nbsp; &nbsp;
-                            <input type="button" value="Delete" onClick={this.onDelete} className="btn btn-danger" />
-                        </div>
-                    </form>
+                            <FormControl fullWidth>
+                                <InputLabel>Category</InputLabel>
+                                <Select
+                                    id="category"
+                                    value={this.state.category}
+                                    label="Category"
+                                    onChange={this.onChangeCategory}
+                                >
 
-                    {this.state.flagged.is_flagged && (
-                        <>
-                            <br />
-                            <p style={{ color: "red" }}>Warning {this.state.flagged.info}, changes will be saved but not displayed.</p>
-                        </>
-                    )}
-                </CardContent>
-            </Card>
+                                    {this.categories.map(category => {
+                                        return (
+                                            <MenuItem value={category} key={category}>{category}</MenuItem>)
+                                    })}
+                                </Select>
+                            </FormControl>
 
+                        </form>
+
+
+                        <CardActions>
+                            <Button onClick={this.onSubmit}>Submit</Button>
+                            <Button onClick={this.onDelete} color='error'>Delete</Button>
+                        </CardActions>
+                    </CardContent>
+                </Card>
+            </ThemeProvider>
         );
     }
 }
