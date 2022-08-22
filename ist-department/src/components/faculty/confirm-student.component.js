@@ -1,9 +1,26 @@
-import React, {useState, useContext, useEffect} from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 
 import AuthContext from "../../context/auth.context";
-
-function useForceUpdate(){
+import { styled } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Avatar from '@mui/material/Avatar';
+import IconButton from '@mui/material/IconButton';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
+import FolderIcon from '@mui/icons-material/Folder';
+import DeleteIcon from '@mui/icons-material/Delete';
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
+function useForceUpdate() {
     const [value, setValue] = useState(0); // integer state
     return () => setValue(value => value + 1); // update the state to force render
 }
@@ -23,18 +40,18 @@ function UserList() {
             })
     }, []);
 
-    function approve(id){
+    function approve(id) {
         const role = {
             role: 'student_leader'
         };
 
-        axios.post('http://localhost:4000/auth/update/'+id, role)
+        axios.post('http://localhost:4000/auth/update/' + id, role)
             .catch(err => {
                 console.log(err);
                 return;
             });
 
-        
+
         let stu = students;
         let index = stu.findIndex(s => s._id === id);
         stu[index].role = role.role;
@@ -43,18 +60,18 @@ function UserList() {
         forceUpdate();
     }
 
-    function revoke(id){
+    function revoke(id) {
         const role = {
             role: 'pending'
         };
 
-        axios.post('http://localhost:4000/auth/update/'+id, role)
+        axios.post('http://localhost:4000/auth/update/' + id, role)
             .catch(err => {
                 console.log(err);
                 return;
             });
 
-        
+
         let stu = students;
         let index = stu.findIndex(s => s._id === id);
         stu[index].role = role.role;
@@ -62,35 +79,56 @@ function UserList() {
         setStudents(stu);
         forceUpdate();
     }
-    
+
     return (
         <div>
             <h3>Confirm Student Leaders</h3>
-            {
-                students && students.map(student => {
-                    return (
-                        <>
-                            {student.role === 'pending' && (
-                                <>
-                                    <div style={{backgroundColor: "#ccc", borderRadius: "5px", padding: "5px", display: "flex", justifyContent: "space-between"}}>
-                                        Name: {student.name} &nbsp;&nbsp; E-mail: {student.email} &nbsp;&nbsp; Role: {student.role} <span><button className="btn btn-primary" onClick={() => approve(student._id)}>Approve</button></span>
-                                    </div>
-                                    <br/>
-                                </>
-                            )}
+            <List>
 
-                            {student.role === 'student_leader' && (
-                                <>
-                                    <div style={{backgroundColor: "#ccc", borderRadius: "5px", padding: "5px", display: "flex", justifyContent: "space-between"}}>
-                                        Name: {student.name} &nbsp;&nbsp; E-mail: {student.email} &nbsp;&nbsp; Role: {student.role} <span><button className="btn btn-danger" onClick={() => revoke(student._id)}>Revoke</button></span>
-                                    </div>
-                                    <br/>
-                                </>
-                            )}
-                        </>
-                    )
-                })
-            }
+                {
+                    students && students.map(student => {
+                        return (
+                            <>
+                                {student.role === 'pending' && (
+                                    <ListItem
+                                        key={student._id}
+                                        secondaryAction={
+                                            <IconButton edge="end" aria-label="Approve" onClick={() => approve(student._id)}>
+                                                <CheckIcon />
+                                            </IconButton>
+                                        }
+                                    >
+                                        <ListItemText
+                                            primary={student.email}
+                                            secondary={student.name + " - " + student.role}
+                                        />
+                                    </ListItem>
+                                )}
+
+
+                                {
+                                    student.role === 'student_leader' && (
+                                        <ListItem
+                                            key={student._id}
+                                            secondaryAction={
+                                                <IconButton edge="end" aria-label="Approve" onClick={() => revoke(student._id)}>
+                                                    <CloseIcon />
+                                                </IconButton>
+                                            }
+                                        >
+                                            <ListItemText
+                                                primary={student.email}
+                                                secondary={student.name + " - " + student.role}
+                                            />
+                                        </ListItem>
+                                    )
+                                }
+                            </>
+                        )
+                    })
+                }
+            </List>
+
         </div>
     )
 }
