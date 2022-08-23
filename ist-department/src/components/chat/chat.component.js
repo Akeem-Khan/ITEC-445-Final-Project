@@ -10,15 +10,15 @@ import {
 } from '@chatscope/chat-ui-kit-react';
 import PersonIcon from '@mui/icons-material/Person';
 import {
-    Paper, 
-    Button, 
-    Dialog, 
-    DialogTitle, 
+    Paper,
+    Button,
+    Dialog,
+    DialogTitle,
     List,
-    ListItem, 
-    ListItemAvatar, 
-    ListItemText, 
-    Toolbar, 
+    ListItem,
+    ListItemAvatar,
+    ListItemText,
+    Toolbar,
     Box
 } from '@mui/material';
 import PropTypes from 'prop-types';
@@ -29,10 +29,19 @@ import axios from 'axios';
 import AuthContext from "../../context/auth.context";
 import UsersContext from '../../context/users.context';
 import SocketContext from '../../context/socket.context';
-const emails = ['username@gmail.com', 'user02@gmail.com'];
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardActions from '@mui/material/CardActions';
+import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+
 const server = 'http://localhost:4000/'
 function NewChatDialog(props) {
     const { onClose, selectedValue, open, users } = props;
+    const [search, setSearch] = React.useState('');
+
     const handleClose = () => {
         onClose(selectedValue);
     };
@@ -40,24 +49,48 @@ function NewChatDialog(props) {
     const handleListItemClick = (value) => {
         onClose(value);
     };
+    const theme = createTheme();
+
 
 
     return (
-        <Dialog onClose={handleClose} open={open}>
-            <DialogTitle>New Chat</DialogTitle>
-            <List sx={{ pt: 0 }}>
-                {users.map((user) => (
-                    <ListItem button onClick={() => handleListItemClick(user)} key={user.email}>
-                        <ListItemAvatar>
-                            <Avatar>
-                                <PersonIcon />
-                            </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText primary={user.name} />
-                    </ListItem>
-                ))}
-            </List>
-        </Dialog>
+        <ThemeProvider theme={theme}>
+            <Dialog onClose={handleClose} open={open}>
+                <DialogTitle>New Chat</DialogTitle>
+                <TextField
+                    margin="normal"
+                    fullWidth
+                    id="search"
+                    label="Search"
+                    name="search"
+                    autoFocus
+                    onChange={(e) => setSearch(e.target.value)}
+                    value={search}
+                />
+                <List>
+                    {users.map((user) => {
+                        return (
+                            <div>
+
+                                {(user.name.includes(search)) && (
+                                    < ListItem button onClick={() => handleListItemClick(user)} key={user.email}>
+                                        <ListItemAvatar>
+                                            <Avatar>
+                                                <PersonIcon />
+                                            </Avatar>
+                                        </ListItemAvatar>
+                                        <ListItemText primary={user.name} secondary={user.email} />
+                                    </ListItem>
+                                )}
+                            </div>
+                        )
+                    })}
+
+
+                </List>
+            </Dialog>
+        </ThemeProvider >
+
     );
 
 }
@@ -137,6 +170,8 @@ function Chat() {
     };
 
     const getChats = () => {
+
+
         axios.get('http://localhost:4000/chat/all/user/' + user.id)
             .then(response => {
                 let chats = getOtherUsers(response.data)
@@ -170,77 +205,86 @@ function Chat() {
 
     return (
         <div className='container-fluid' >
-            <div className="row">
-                <div className="col-4" >
-                    <Paper elevation={3} style={{ height: '70vh' }}>
-                        <Toolbar>
-                            <Button variant="contained" onClick={handleClickOpen}>New Chat</Button>
+            <Card className='mb-2'>
+                <CardContent>
+                    <Typography variant="h4" component="div">
+                        Chat
+                    </Typography>
+                    <div className="row">
+                        <div className="col-4" >
+                            <Paper elevation={1} style={{ height: '70vh' }}>
+                                <Toolbar>
+                                    <Button variant="contained" onClick={handleClickOpen}>New Chat</Button>
 
-                        </Toolbar>
+                                </Toolbar>
 
-                        <ConversationList>
+                                <ConversationList>
 
-                            {
-                                chats && chats.map(chat => {
-                                    return (
+                                    {
+                                        chats && chats.map(chat => {
+                                            return (
 
-                                        <Conversation name={chat.otherUser.name} key={chat._id} onClick={() => selectChat(chat)}>
-                                        </Conversation>
+                                                <Conversation name={chat.otherUser.name} key={chat._id} onClick={() => selectChat(chat)}>
+                                                </Conversation>
+                                            )
+                                        })
+                                    }
+                                </ConversationList>
+                            </Paper>
+                        </div>
+
+                        <div className="col-8" >
+
+
+                            <Paper elevation={1} style={{ height: '70vh' }}>
+                                {
+                                    selectedChat && (
+
+                                        <ChatContainer>
+                                            <ConversationHeader>
+                                                <ConversationHeader.Content userName={selectedChat.otherUser.name} />
+                                            </ConversationHeader>
+                                            <MessageList >
+                                                {
+                                                    selectedChat.messages && selectedChat.messages.map(message => {
+                                                        return (
+
+                                                            <Message model={{
+                                                                message: message.text,
+                                                                direction: message.sender == user.id ? 'outgoing' : 'incoming',
+                                                            }} key={message.date} />
+                                                        )
+                                                    })
+                                                }
+
+
+
+
+
+                                            </MessageList>
+                                            <MessageInput placeholder="Type message here" onSend={handleSendMessage} attachButton={false} />
+                                        </ChatContainer>
                                     )
-                                })
-                            }
-                        </ConversationList>
-                    </Paper>
-                </div>
 
-                <div className="col-8" >
+                                }
 
+                                {
+                                    !selectedChat && (
 
-                    <Paper elevation={3} style={{ height: '70vh' }}>
-                        {
-                            selectedChat && (
+                                        <Box sx={{ p: 3 }}>
+                                            Select A Chat
+                                        </Box>
+                                    )
 
-                                <ChatContainer>
-                                    <ConversationHeader>
-                                        <ConversationHeader.Content userName={selectedChat.otherUser.name} />
-                                    </ConversationHeader>
-                                    <MessageList >
-                                        {
-                                            selectedChat.messages && selectedChat.messages.map(message => {
-                                                return (
+                                }
 
-                                                    <Message model={{
-                                                        message: message.text,
-                                                        direction: message.sender == user.id ? 'outgoing' : 'incoming',
-                                                    }} key={message.date} />
-                                                )
-                                            })
-                                        }
+                            </Paper>
+                        </div>
+                    </div>
+                </CardContent>
 
+            </Card>
 
-
-
-
-                                    </MessageList>
-                                    <MessageInput placeholder="Type message here" onSend={handleSendMessage} attachButton={false} />
-                                </ChatContainer>
-                            )
-
-                        }
-
-                        {
-                            !selectedChat && (
-
-                                <Box sx={{p: 3}}>
-                                    Select A Chat
-                                </Box>
-                            )
-
-                        }
-
-                    </Paper>
-                </div>
-            </div>
             <NewChatDialog
                 open={open}
                 users={users.filter((listUser) => {
