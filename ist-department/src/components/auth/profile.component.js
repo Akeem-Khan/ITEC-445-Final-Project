@@ -1,10 +1,24 @@
-import React, {useState, useContext, useEffect} from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 import AuthContext from "../../context/auth.context";
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
 
-function useForceUpdate(){
+import CardActions from '@mui/material/CardActions';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Avatar from '@mui/material/Avatar';
+import IconButton from '@mui/material/IconButton';
+import BadgeIcon from '@mui/icons-material/Badge';
+import EmailIcon from '@mui/icons-material/Email';
+function useForceUpdate() {
     const [value, setValue] = useState(0); // integer state
     return () => setValue(value => value + 1); // update the state to force render
 }
@@ -24,12 +38,12 @@ function Profile() {
             });
     }, []);
 
-    function apply(){
+    function apply() {
         const role = {
             role: 'pending'
         };
 
-        axios.post('http://localhost:4000/auth/update/'+user.id, role)
+        axios.post('http://localhost:4000/auth/update/' + user.id, role)
             .then(res => {
                 getUser();
             })
@@ -40,12 +54,12 @@ function Profile() {
         forceUpdate();
     }
 
-    function revert(){
+    function revert() {
         const role = {
             role: 'student'
         };
 
-        axios.post('http://localhost:4000/auth/update/'+user.id, role)
+        axios.post('http://localhost:4000/auth/update/' + user.id, role)
             .then(res => {
                 getUser();
             })
@@ -56,119 +70,154 @@ function Profile() {
         forceUpdate();
     }
 
-    function unFlag(notice){
+    function unFlag(notice) {
         notice.flagged.is_flagged = false;
         notice.flagged.info = '';
         notice.flagged.by = '';
 
-        axios.post('http://localhost:4000/notices/update/'+notice._id, notice)
+        axios.post('http://localhost:4000/notices/update/' + notice._id, notice)
             .then(res => console.log(res.data));
 
         forceUpdate();
     }
-    
+
     return (
         <>
-            <h3>User Info</h3>
-            <br/>
-            <div style={{backgroundColor: "#ccc", borderRadius: "5px", padding: "5px"}}>
-                <h4>{user.name}</h4>
-                <p>
-                    E-mail: {user.email}
-                    <br/>
-                    Role: {user.role}
-                </p>
+            <Card className='mb-2'>
+                <CardContent>
+                    <Typography variant="h4" component="div">
+                        User Info
+                    </Typography>
+                    <List>
+                        <ListItem>
+                            <ListItemIcon>
+                                <EmailIcon />
+                            </ListItemIcon>
+                            <ListItemText
+                                primary={user.email}
+                                secondary='E-mail'
+                            />
+                        </ListItem>
+                        <ListItem>
+                            <ListItemIcon>
+                                <BadgeIcon />
+                            </ListItemIcon>
+                            <ListItemText
+                                primary={user.role}
+                                secondary='Role'
+                            />
+                        </ListItem>
+                    </List>
 
-                {user !== undefined && (
-                    <>
-                        {user.role === 'student' && (
-                            <>
-                                Want to apply for Student Leader?
-                                <br/>
-                                <br/>
-                                <button className="btn btn-primary" onClick={apply}>Apply Now</button>
-                            </>
-                        )}
 
-                        {((user.role === 'pending') || (user.role === 'student_leader')) && (
-                            <>
-                                Do you want to revert your role back to student?
-                                <br/>
-                                <br/>
-                                <button className="btn btn-danger" onClick={revert}>Revert</button>
-                            </>
-                        )}
-                    </>
-                    
-                )}
-            </div>
+                </CardContent>
 
-            <br/>
-            <h3>Your Notices</h3>
-            <br/>
+            </Card>
+            <Card className='mb-2'>
+                <CardContent>
+                    <Typography variant="h4" component="div">
+                        Your Notices
+                    </Typography>
 
-            {
-                notices && notices.map(notice => {
-                    return (
-                        <div>
-                            {user !== undefined && (
-                                user.email === notice.author && (
-                                    <>
-                                        <div style={{backgroundColor: "#ccc", borderRadius: "5px", padding: "5px"}}>
-                                            <h4>{notice.title}</h4>
-                                            <p>{notice.text}</p>
-                                            Category: {notice.category}
-                                            
-                                            <br/>
-                                            <br/>
-                                            {user.role === 'student_leader' || user.role === 'faculty' && (
-                                                <Link to={"/edit/"+notice._id}><button className="btn btn-primary">Edit</button></Link>
-                                            )}
-                                        </div>
-                                        <br/>
-                                    </>
-                                )
-                            )}
-                        </div>
-                    )
-                })
-            }
-            
+                    {
+                        notices && notices.map(notice => {
+                            return (
+                                <div>
+                                    {user !== undefined && (
+                                        user.email === notice.author && (
+                                            <>
 
+                                                <Card className='mb-2'>
+                                                    <CardContent>
+                                                        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                                            Category: {notice.category}
+                                                        </Typography>
+                                                        <Typography variant="h6" component="div">
+                                                            {notice.title}
+                                                        </Typography>
+                                                        <Typography variant="body2">
+                                                            {notice.flagged.is_flagged && (
+                                                                <span>{notice.flagged.info}</span>
+                                                            )}
+
+                                                            {!notice.flagged.is_flagged && (
+                                                                <p>{notice.text}</p>
+                                                            )}
+                                                        </Typography>
+                                                    </CardContent>
+                                                    <CardActions>
+                                                        {user !== undefined && (
+                                                            <>
+                                                                <br />
+                                                                {user.email === notice.author && (user.role === 'student_leader' || user.role === 'faculty') && (
+                                                                    <Button size="small" to={"/edit/" + notice._id} component={Link}>Edit</Button>
+                                                                )}
+                                                            </>
+                                                        )}
+                                                    </CardActions>
+                                                </Card>
+                                            </>
+                                        )
+                                    )}
+                                </div>
+                            )
+                        })
+                    }
+                </CardContent>
+            </Card>
             {user !== undefined && (
                 <>
                     {user.role === 'faculty' && (
                         <>
-                            <br/>
-                            <h3>Notices Flagged By You</h3>
-                            <br/>
+                            <Card className='mb-2'>
+                                <CardContent>
+                                    <Typography variant="h4" component="div">
+                                        Notices Flagged By You
+                                    </Typography>
+                                    {
+                                        notices && notices.map(notice => {
+                                            return (
+                                                <div>
 
-                            {
-                                notices && notices.map(notice => {
-                                    return (
-                                        <div>
-                                            {user.email === notice.flagged.by && (
-                                                <>
-                                                    <div style={{backgroundColor: "#ccc", borderRadius: "5px", padding: "5px"}}>
-                                                        <h4>{notice.title}</h4>
-                                                        <p>{notice.text}</p>
+                                                    {user.email === notice.flagged.by && (
+                                                        <>
+                                                            <Card className='mb-2'>
+                                                                <CardContent>
+                                                                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                                                        Category: {notice.category}
+                                                                    </Typography>
+                                                                    <Typography variant="h6" component="div">
+                                                                        {notice.title}
+                                                                    </Typography>
+                                                                    <Typography variant="body2">
+                                                                        {notice.flagged.is_flagged && (
+                                                                            <span>{notice.flagged.info}</span>
+                                                                        )}
 
-                                                        Author: {notice.author} &nbsp; Catrgory: {notice.category}
-                                                        <br/>
-                                                        <br/>
-                                                        <button onClick={() => unFlag(notice)} className="btn btn-danger">Remove Flag</button>
-                                                    </div>
-                                                    <br/>
-                                                </>
-                                            )}
-                                        </div>
-                                    )
-                                })
-                            }
+                                                                        {!notice.flagged.is_flagged && (
+                                                                            <p>{notice.text}</p>
+                                                                        )}
+                                                                    </Typography>
+                                                                </CardContent>
+                                                                <CardActions>
+                                                                    <Button size="small" onClick={() => unFlag(notice)} color='error'>Remove Flag</Button>
+                                                                </CardActions>
+                                                            </Card>
+                                                        </>
+                                                    )}
+                                                </div>
+                                            )
+                                        })
+                                    }
+
+                                </CardContent>
+                            </Card>
+
+
                         </>
                     )}
                 </>
-                
+
             )}
         </>
     );
