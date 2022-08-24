@@ -138,7 +138,7 @@ export default class EditNotice extends Component {
                                 label="Title"
                                 name="title"
                                 autoFocus
-                                onChange={(e) => this.onChangeTitle(e.target.value)}
+                                onChange={this.onChangeTitle}
                                 value={this.state.title}
                             />
                             <TextField
@@ -149,7 +149,7 @@ export default class EditNotice extends Component {
                                 label="Text"
                                 name="text"
                                 autoFocus
-                                onChange={(e) => this.onChangeText(e.target.value)}
+                                onChange={this.onChangeText}
                                 value={this.state.text}
                             />
 
