@@ -261,7 +261,26 @@ const getAll = (req, res) => {
     });
 };
 
+const getAllStudents = async (req, res) => {
+    try{
+    const students = await User.find({role: 'student'})
+    res.status(200).json({result: students, message: 'All Students successfully retrieved'})
+    } catch (err) {
+    res.status(400).send(err.message)
+    }
+}
+
+const getAllFaculty = async (req, res) => {
+    try{
+    const faculty = await User.find({role: 'faculty'})
+    res.status(200).json({result: faculty, message: 'All faculty successfully retrieved'})
+    } catch (err) {
+    res.status(400).send(err.message)
+    }
+}
 
 
 
-export { register, accountActivation, login, logout, loggedIn, update, confirm, getAll, getUser };
+
+export { register, accountActivation, login, logout, loggedIn, update, confirm, getAll, getUser, getAllStudents,
+    getAllFaculty };
