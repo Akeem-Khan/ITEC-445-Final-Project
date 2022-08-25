@@ -141,81 +141,131 @@ function Navbar() {
                         </Typography>
                         <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
 
+                            {user !== undefined && (
+                                <>
+                                    {user.loggedIn === false && (
+
+
+                                        <>
+                                            <Button
+                                                component={RouterLink} to="/register"
+
+                                                onClick={handleCloseNavMenu}
+                                                sx={{ my: 2, color: 'white', display: 'block' }}
+                                            >
+                                                Register
+                                            </Button>
+                                            <Button
+                                                component={RouterLink} to="/login"
+
+                                                onClick={handleCloseNavMenu}
+                                                sx={{ my: 2, color: 'white', display: 'block' }}
+                                            >
+                                                Log in
+                                            </Button>
+
+                                        </>
+                                    )}
+
+                                    {((user.role === 'student_leader') || (user.role === 'faculty')) && (
+                                        <Button
+                                            component={RouterLink} to="/create"
+
+                                            onClick={handleCloseNavMenu}
+                                            sx={{ my: 2, color: 'white', display: 'block' }}
+                                        >
+                                            Create Notice
+                                        </Button>
+                                    )}
+
+                                    {user.role === 'faculty' && (
+                                        <Button
+                                            component={RouterLink} to="/confirm"
+
+                                            onClick={handleCloseNavMenu}
+                                            sx={{ my: 2, color: 'white', display: 'block' }}
+                                        >
+                                            Confirm Student Leader
+                                        </Button>
+
+                                    )}
+
+                                    {user.loggedIn === true && (
+                                        <>
+                                            <Button
+                                                component={RouterLink} to="/cal"
+
+                                                onClick={handleCloseNavMenu}
+                                                sx={{ my: 2, color: 'white', display: 'block' }}
+                                            >
+                                                Booking Calendar
+                                            </Button>
+                                            <Button
+                                                component={RouterLink} to="/chat"
+
+                                                onClick={handleCloseNavMenu}
+                                                sx={{ my: 2, color: 'white', display: 'block' }}
+                                            >
+                                                Chat
+                                            </Button>
+                                        </>
+                                    )}
+                                </>
+                            )}
                         </Box>
 
                         <Box sx={{ flexGrow: 0 }}>
-                            <Tooltip title="Open settings">
-                                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                    <Avatar><PersonIcon /></Avatar>
+                            {user !== undefined && (
+                                <>
 
-                                </IconButton>
-                            </Tooltip>
-                            <Menu
-                                sx={{ mt: '45px' }}
-                                id="menu-appbar"
-                                anchorEl={anchorElUser}
-                                anchorOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
-                                }}
-                                keepMounted
-                                transformOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
-                                }}
-                                open={Boolean(anchorElUser)}
-                                onClose={handleCloseUserMenu}
-                            >
+                                    {user.loggedIn === true && (
+                                        <>
+                                            <Tooltip title="Open settings">
+                                                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                                                    <Avatar><PersonIcon /></Avatar>
 
-                                {user !== undefined && (
-                                    <>
-                                        {user.loggedIn === false && (
+                                                </IconButton>
+                                            </Tooltip>
+                                        </>
+                                    )}
+                                    <Menu
+                                        sx={{ mt: '45px' }}
+                                        id="menu-appbar"
+                                        anchorEl={anchorElUser}
+                                        anchorOrigin={{
+                                            vertical: 'top',
+                                            horizontal: 'right',
+                                        }}
+                                        keepMounted
+                                        transformOrigin={{
+                                            vertical: 'top',
+                                            horizontal: 'right',
+                                        }}
+                                        open={Boolean(anchorElUser)}
+                                        onClose={handleCloseUserMenu}
+                                    >
 
-
+                                        {user !== undefined && (
                                             <>
-                                                <MenuItem to="/register" component={RouterLink}>
-                                                    <Typography textAlign="center">Register</Typography>
-                                                </MenuItem>
-                                                <MenuItem to="/login" component={RouterLink}>
-                                                    <Typography textAlign="center">Log in</Typography>
-                                                </MenuItem>
 
+                                                {user.loggedIn === true && (
+                                                    <>
+                                                        <MenuItem to="/profile" component={RouterLink}>
+                                                            <Typography textAlign="center">My Profile</Typography>
+                                                        </MenuItem>
+                                                        <MenuItem onClick={logOut}>
+                                                            <Typography textAlign="center">Log Out</Typography>
+                                                        </MenuItem>
+
+                                                    </>
+                                                )}
                                             </>
                                         )}
+                                    </Menu>
+                                </>
+                            )}
 
-                                        {((user.role === 'student_leader') || (user.role === 'faculty')) && (
-                                            <MenuItem to="/create" component={RouterLink}>
-                                                <Typography textAlign="center">Create Notice</Typography>
-                                            </MenuItem>
 
-                                        )}
-
-                                        {user.role === 'faculty' && (
-                                            <MenuItem to="/confirm" component={RouterLink}>
-                                                <Typography textAlign="center">Confirm student leader</Typography>
-                                            </MenuItem>
-                                        )}
-
-                                        {user.loggedIn === true && (
-                                            <>
-                                                <MenuItem to="/cal" component={RouterLink}>
-                                                    <Typography textAlign="center">Booking Calendar</Typography>
-                                                </MenuItem>
-                                                <MenuItem to="/chat" component={RouterLink}>
-                                                    <Typography textAlign="center">Chat</Typography>
-                                                </MenuItem>
-                                                <MenuItem to="/profile" component={RouterLink}>
-                                                    <Typography textAlign="center">My Profile</Typography>
-                                                </MenuItem>
-                                                <MenuItem onClick={logOut}>
-                                                    <Typography textAlign="center">Log Out</Typography>
-                                                </MenuItem>
-
-                                            </>
-                                        )}
-                                    </>
-                                )}
-                            </Menu>
                         </Box>
                     </Toolbar>
                 </Container>
