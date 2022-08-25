@@ -1,5 +1,6 @@
 import {Component} from 'react';
 import { styled } from '@mui/material/styles';
+import AuthContext from "../../context/auth.context";
 import {
    
     AppointmentForm,
@@ -16,8 +17,15 @@ import Notes from '@mui/icons-material/Notes';
 import Close from '@mui/icons-material/Close';
 import CalendarToday from '@mui/icons-material/CalendarToday';
 import Create from '@mui/icons-material/Create';
+import CheckBox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Select, {SelectChangeEvent} from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import InputLabel from '@mui/material/InputLabel';
+import add from 'date-fns/add';
+import axios from 'axios';
 
-const PREFIX = 'Demo';
+const PREFIX = 'Appointment';
 const classes = {
   content: `${PREFIX}-content`,
   header: `${PREFIX}-header`,
@@ -62,6 +70,12 @@ const StyledDiv = styled('div')(({ theme }) => ({
       justifyContent: 'space-between',
       padding: theme.spacing(1, 0),
     },
+    [`& .${classes.advisement}`]: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      padding: theme.spacing(1, 0),
+      marginLeft: theme.spacing(2),
+    },
     [`& .${classes.buttonGroup}`]: {
       display: 'flex',
       justifyContent: 'flex-end',
@@ -73,12 +87,16 @@ const StyledDiv = styled('div')(({ theme }) => ({
   }));
 
 export default class AppointmentFormContainerBasic extends Component {
+  static contextType = AuthContext;
     constructor(props) {
       super(props);
   
       this.state = {
         appointmentChanges: {},
+        students: []
       };
+
+      
   
       this.getAppointmentData = () => {
         const { appointmentData } = this.props;
@@ -92,6 +110,15 @@ export default class AppointmentFormContainerBasic extends Component {
       this.changeAppointment = this.changeAppointment.bind(this);
       this.commitAppointment = this.commitAppointment.bind(this);
     }
+
+  async  componentDidMount(){
+        try{
+          const students = await axios.get('http://localhost:4000/auth/AllStudents');
+          this.setState({students: students.data.result})
+        } catch(e){
+          console.log(e)
+        }           
+    }
   
     changeAppointment({ field, changes }) {
       const nextChanges = {
@@ -100,7 +127,7 @@ export default class AppointmentFormContainerBasic extends Component {
       };
       this.setState({
         appointmentChanges: nextChanges,
-      });
+      },()=> console.log(this.state));
     }
   
     commitAppointment(type) {
@@ -130,7 +157,7 @@ export default class AppointmentFormContainerBasic extends Component {
         target,
         onHide,
       } = this.props;
-      const { appointmentChanges } = this.state;
+      const { appointmentChanges, students } = this.state;
   
       const displayAppointmentData = {
         ...appointmentData,
@@ -151,6 +178,37 @@ export default class AppointmentFormContainerBasic extends Component {
         label: field[0].toUpperCase() + field.slice(1),
         className: classes.textField,
       });
+
+      const selectEditorProps = field => ({
+       id: 'advisementFor',
+        onChange: (event) =>{
+          console.log(event.target.value)
+          this.changeAppointment({
+          field: [field], changes: event.target.value,
+        })},
+        value: displayAppointmentData[field] || '',
+        label: 'Advisement For',
+        className: classes.textField,
+      });
+
+      const advisementProps = () => ({
+        checked: displayAppointmentData['isAdvisement']  || false,
+        className: classes.advisement,
+        onChange: ({target})=>{  
+          const endDate = target.checked ? add(displayAppointmentData['startDate'], {minutes: 15}) : displayAppointmentData['endDate'];
+          //this.changeAppointment({field: 'endDate', changes: endDate});
+         // this.changeAppointment({ field: 'isAdvisement', changes: target.checked,});
+          this.setState((state)=>{
+            let {appointmentChanges} = state;
+            appointmentChanges = {...appointmentChanges, 
+              endDate : endDate,
+              isAdvisement : target.checked,
+            }
+            return {appointmentChanges};
+          }, ()=>console.log(this.state))
+          
+        },
+      })
   
       const pickerEditorProps = field => ({
         // keyboard: true,
@@ -171,6 +229,7 @@ export default class AppointmentFormContainerBasic extends Component {
         visibleChange();
         cancelAppointment();
       };
+      const { user } = this.context
   
       return (
         <AppointmentForm.Overlay
@@ -188,10 +247,30 @@ export default class AppointmentFormContainerBasic extends Component {
             <div className={classes.content}>
               <div className={classes.wrapper}>
                 <Create className={classes.icon} color="action" />
+                { displayAppointmentData['isAdvisement'] ?
+                <>
+                
+                <TextField {...selectEditorProps('advisementFor')} select>
+                  {students.map((student, index)=><MenuItem key={index} value={student._id}>{student.name}</MenuItem>)}
+                </TextField>
+                </>
+              :
+              
                 <TextField
-                  {...textEditorProps('title')}
+                {...textEditorProps('title')}
                 />
+              }
+
+                
               </div>
+              {user.role === 'faculty' &&
+              <div className={classes.advisement}>
+                <FormControlLabel control={
+                  <CheckBox {...advisementProps()}  />} label='Advisement Slot' />
+
+              </div>
+                }
+
               <div className={classes.wrapper}>
                 <CalendarToday className={classes.icon} color="action" />
                 <LocalizationProvider dateAdapter={AdapterMoment}>
@@ -201,13 +280,15 @@ export default class AppointmentFormContainerBasic extends Component {
                       props => <TextField className={classes.picker} {...props} />
                     }
                     {...startDatePickerProps}
-                  />
+                    />
                   <DateTimePicker
                     label="End Date"
                     renderInput={
                       props => <TextField className={classes.picker} {...props} />
                     }
                     {...endDatePickerProps}
+                    disabled={displayAppointmentData['isAdvisement'] || false}
+                    
                   />
                 </LocalizationProvider>
               </div>

@@ -21,12 +21,26 @@ import AdbIcon from '@mui/icons-material/Adb';
 import Link from '@mui/material/Link';
 import { useHistory } from "react-router-dom";
 import axios from "axios";
+import AdvismentModal from '../calender/advisementModal'
+
 function Navbar() {
     const { user } = useContext(AuthContext);
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     const pages = ['Products', 'Pricing', 'Blog'];
     const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+    const [open, setOpen] = React.useState(false);
+
+    const handleModalOpen = () => {
+        setOpen(true);
+    };
+
+    const handleModalClose = (e) => {
+        //if(reason == 'backdropClick') return;
+        console.log(e)
+        setOpen(false);
+    };
+
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
     };
@@ -51,6 +65,7 @@ function Navbar() {
         await getUser();
         history.push("/");
     }
+    console.log(user)
     return (
 
         <>
@@ -270,6 +285,7 @@ function Navbar() {
                     </Toolbar>
                 </Container>
             </AppBar>
+            <AdvismentModal handleClose={handleModalClose} open={open} user={user} />
         </>
 
     );

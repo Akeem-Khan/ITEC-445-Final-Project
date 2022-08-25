@@ -255,15 +255,6 @@ const getAll = (req, res) => {
     });
 };
 
-const getUser = async (req, res) => {
-    const user = await User.findById(req.params.id)
-    if (!user)
-        res.status(404).send('User not found');
-    else {
-        res.json(user);
-    }
-};
-
 
 
 

@@ -136,7 +136,7 @@ class Calendar extends Component {
       });
     }
 
-  componentWillMount(){
+  componentDidMount(){
     
     this.fetchForAppointments();
    
@@ -154,9 +154,23 @@ class Calendar extends Component {
         try{
           if(user.role === 'faculty'){
             const appointments = await axios.get(`http://localhost:4000/appointment/getAllFacultyAppointments/${user.id}`)
+            const result = appointments.data.result.map((appt)=>{
+              if(appt.isAdvisement){
+                if(appt.advisementFor){
+
+                  console.log(appt)
+                  appt.title = appt.advisementFor.name + '- Advisement'
+                } else {
+                  appt.title = 'Advisement Slot'
+
+                }
+              }
+              return appt;
+            })
+            console.log(result);
                this.setState({
                   user: user,
-                  data: appointments.data.result
+                  data: result
               });
           } else {
             const appointments = await axios.get(`http://localhost:4000/appointment/getAllAppointmentByOwner/${user.id}`);
