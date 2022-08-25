@@ -213,8 +213,18 @@ function Navbar() {
                                                 onClick={handleCloseNavMenu}
                                                 sx={{ my: 2, color: 'white', display: 'block' }}
                                             >
-                                                Booking Calendar
+                                                Calendar
                                             </Button>
+                                            {user.role != 'faculty'  &&
+                                            <Button
+                                                
+
+                                                onClick={handleModalOpen}
+                                                sx={{ my: 2, color: 'white', display: 'block' }}
+                                            >
+                                                Book Advisement
+                                            </Button>
+                                            }
                                             <Button
                                                 component={RouterLink} to="/chat"
 
