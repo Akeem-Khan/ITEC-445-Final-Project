@@ -26,7 +26,8 @@ import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Typography from '@mui/material/Typography';
 import NewChatDialog from './new-chat-dialog.component';
-
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const server = 'http://localhost:4000/'
 
@@ -155,6 +156,11 @@ function Chat() {
                                             return (
 
                                                 <Conversation name={chat.otherUser.name} key={chat._id} onClick={() => selectChat(chat)}>
+                                                    <Conversation.Operations visible>
+                                                        <IconButton aria-label="delete" color='error'>
+                                                            <DeleteIcon />
+                                                        </IconButton>
+                                                    </Conversation.Operations>
                                                 </Conversation>
                                             )
                                         })
