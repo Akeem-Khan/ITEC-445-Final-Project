@@ -28,12 +28,15 @@ import Typography from '@mui/material/Typography';
 import NewChatDialog from './new-chat-dialog.component';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
-
+import DeleteChatDialog from './delete-chat-dialog.component';
+import Stack from '@mui/material/Stack';
 const server = 'http://localhost:4000/'
 
 
 function Chat() {
     const [open, setOpen] = React.useState(false);
+    const [deleteOpen, setDeleteOpen] = React.useState(false);
+
     const { user } = useContext(AuthContext);
     const [chats, setChats] = useState([]);
     const { users } = useContext(UsersContext);
@@ -100,6 +103,11 @@ function Chat() {
         setOpen(true);
     };
 
+    const handleDeleteOpen = () => {
+        setDeleteOpen(true);
+        setSelectedChat(false);
+    };
+
     const getChats = () => {
 
 
@@ -134,6 +142,17 @@ function Chat() {
         }
     };
 
+    const deleteChat = (value) => {
+        setSelectedChat(false);
+        setDeleteOpen(false);
+        try {
+            socket.emit('delete-chat', value);
+            getChats()
+        } catch {
+
+        }
+    };
+
     return (
         <div className='container-fluid' >
             <Card className='mb-2'>
@@ -145,9 +164,15 @@ function Chat() {
                         <div className="col-4" >
                             <Paper elevation={1} style={{ height: '70vh' }}>
                                 <Toolbar>
-                                    <Button variant="contained" onClick={handleClickOpen}>New Chat</Button>
+                                    <Stack direction="row" spacing={1}>
+                                        <IconButton onClick={handleClickOpen} color='primary'>
+                                            <AddIcon />
+                                        </IconButton>
+                                        <IconButton onClick={handleDeleteOpen} color='error'>
+                                            <DeleteIcon />
+                                        </IconButton>
 
-                                </Toolbar>
+                                    </Stack>                                </Toolbar>
 
                                 <ConversationList>
 
@@ -156,11 +181,6 @@ function Chat() {
                                             return (
 
                                                 <Conversation name={chat.otherUser.name} key={chat._id} onClick={() => selectChat(chat)}>
-                                                    <Conversation.Operations visible>
-                                                        <IconButton aria-label="delete" color='error'>
-                                                            <DeleteIcon />
-                                                        </IconButton>
-                                                    </Conversation.Operations>
                                                 </Conversation>
                                             )
                                         })
@@ -227,6 +247,11 @@ function Chat() {
                     return listUser._id != user.id
                 })}
                 onClose={handleClose}
+            />
+            <DeleteChatDialog
+                open={deleteOpen}
+                chats={chats}
+                onClose={deleteChat}
             />
 
             <Toolbar></Toolbar>
