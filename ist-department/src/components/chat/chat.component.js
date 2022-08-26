@@ -8,20 +8,12 @@ import {
     Conversation,
     ConversationList
 } from '@chatscope/chat-ui-kit-react';
-import PersonIcon from '@mui/icons-material/Person';
 import {
     Paper,
     Button,
-    Dialog,
-    DialogTitle,
-    List,
-    ListItem,
-    ListItemAvatar,
-    ListItemText,
     Toolbar,
     Box
 } from '@mui/material';
-import PropTypes from 'prop-types';
 import AddIcon from '@mui/icons-material/Add';
 import * as React from 'react';
 import { useState, useContext, useEffect } from 'react';
@@ -33,73 +25,11 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import NewChatDialog from './new-chat-dialog.component';
 
 
 const server = 'http://localhost:4000/'
-function NewChatDialog(props) {
-    const { onClose, selectedValue, open, users } = props;
-    const [search, setSearch] = React.useState('');
 
-    const handleClose = () => {
-        onClose(selectedValue);
-    };
-
-    const handleListItemClick = (value) => {
-        onClose(value);
-    };
-    const theme = createTheme();
-
-
-
-    return (
-        <ThemeProvider theme={theme}>
-            <Dialog onClose={handleClose} open={open}>
-                <DialogTitle>New Chat</DialogTitle>
-                <TextField
-                    margin="normal"
-                    fullWidth
-                    id="search"
-                    label="Search"
-                    name="search"
-                    autoFocus
-                    onChange={(e) => setSearch(e.target.value)}
-                    value={search}
-                />
-                <List>
-                    {users.map((user) => {
-                        return (
-                            <div>
-
-                                {(user.name.includes(search)) && (
-                                    < ListItem button onClick={() => handleListItemClick(user)} key={user.email}>
-                                        <ListItemAvatar>
-                                            <Avatar>
-                                                <PersonIcon />
-                                            </Avatar>
-                                        </ListItemAvatar>
-                                        <ListItemText primary={user.name} secondary={user.email} />
-                                    </ListItem>
-                                )}
-                            </div>
-                        )
-                    })}
-
-
-                </List>
-            </Dialog>
-        </ThemeProvider >
-
-    );
-
-}
-
-NewChatDialog.propTypes = {
-    onClose: PropTypes.func.isRequired,
-    open: PropTypes.bool.isRequired,
-    users: PropTypes.array.isRequired,
-};
 
 function Chat() {
     const [open, setOpen] = React.useState(false);
