@@ -46,7 +46,7 @@ export default class EditNotice extends Component {
     }
 
     componentDidMount() {
-        axios.get('http://localhost:4000/notices/' + this.props.match.params.id)
+        axios.get(`${process.env.REACT_APP_API}/notices/${this.props.match.params.id}`)
             .then(response => {
                 this.setState({
                     title: response.data.title,
@@ -98,12 +98,12 @@ export default class EditNotice extends Component {
             },
         };
 
-        axios.post('http://localhost:4000/notices/update/' + this.props.match.params.id, notice)
+        axios.post(`${process.env.REACT_APP_API}/notices/update/${this.props.match.params.id}`, notice)
             .then(res => console.log(res.data));
     }
 
     onDelete() {
-        axios.delete('http://localhost:4000/notices/update/' + this.props.match.params.id)
+        axios.delete(`${process.env.REACT_APP_API}/notices/update/${this.props.match.params.id}`)
             .then(res => {
                 console.log(res.data);
                 this.props.history.push('/')

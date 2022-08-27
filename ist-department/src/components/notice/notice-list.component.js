@@ -23,7 +23,7 @@ function NoticeList() {
 
 
     useEffect(() => {
-        axios.get('http://localhost:4000/notices/')
+        axios.get(`${process.env.REACT_APP_API}/notices/`)
             .then(response => {
                 setNotices(response.data);
             })
@@ -38,7 +38,7 @@ function NoticeList() {
         notice.flagged.info = `This post was removed by ${user.name}. You can contact this person with the following: ${user.email}`;
         notice.flagged.by = user.email;
 
-        axios.post('http://localhost:4000/notices/update/' + notice._id, notice)
+        axios.post(`${process.env.REACT_APP_API}/notices/update/${notice._id}`, notice)
             .then(res => console.log(res.data));
 
         forceUpdate();
@@ -50,7 +50,7 @@ function NoticeList() {
         notice.flagged.info = '';
         notice.flagged.by = '';
 
-        axios.post('http://localhost:4000/notices/update/' + notice._id, notice)
+        axios.post(`${process.env.REACT_APP_API}/notices/update/${notice._id}`, notice)
             .then(res => console.log(res.data));
 
         forceUpdate();

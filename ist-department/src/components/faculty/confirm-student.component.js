@@ -31,7 +31,7 @@ function UserList() {
     const forceUpdate = useForceUpdate();
 
     useEffect(() => {
-        axios.get('http://localhost:4000/auth/confirm')
+        axios.get(`${process.env.REACT_APP_API}/auth/confirm`)
             .then(res => {
                 setStudents(res.data);
             })
@@ -45,7 +45,7 @@ function UserList() {
             role: 'student_leader'
         };
 
-        axios.post('http://localhost:4000/auth/update/' + id, role)
+        axios.post(`${process.env.REACT_APP_API}/auth/update/${id}`, role)
             .catch(err => {
                 console.log(err);
                 return;
@@ -65,7 +65,7 @@ function UserList() {
             role: 'pending'
         };
 
-        axios.post('http://localhost:4000/auth/update/' + id, role)
+        axios.post(`${process.env.REACT_APP_API}/auth/update/${id}`, role)
             .catch(err => {
                 console.log(err);
                 return;

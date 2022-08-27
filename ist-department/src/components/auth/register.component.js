@@ -65,7 +65,7 @@ function Register() {
           role: 'student',
         };
 
-        await axios.post("http://localhost:4000/auth/", registerData);
+        await axios.post(`${process.env.REACT_APP_API}/auth/`, registerData);
         await getUser();
 
         setButtonText("Email Sent");
@@ -84,7 +84,7 @@ function Register() {
           role: 'faculty',
         };
 
-        await axios.post("http://localhost:4000/auth/", registerData);
+        await axios.post(`${process.env.REACT_APP_API}/auth/`, registerData);
         await getUser();
 
         setButtonText("Email Sent");

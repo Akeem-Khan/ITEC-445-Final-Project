@@ -42,7 +42,7 @@ function CreateNotice() {
             }
         };
 
-        await axios.post('http://localhost:4000/notices/add', newNotice);
+        await axios.post(`${process.env.REACT_APP_API}/notices/add`, newNotice);
 
         setTitle("");
         setText("");

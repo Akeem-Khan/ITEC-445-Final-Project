@@ -2,15 +2,13 @@ import axios from "axios";
 import React, { createContext, useEffect, useState } from "react";
 import socketClient from "socket.io-client";
 
-const SERVER = 'http://localhost:4000/'
-
 const SocketContext = createContext();
 
 function SocketContextProvider(props) {
     const [socket, setSocket] = useState([]);
 
     async function getSocket() {
-        var socket = socketClient(SERVER);
+        var socket = socketClient(process.env.REACT_APP_API);
         socket.on('connection', () => {
             console.log(`I'm connected with the back-end`);
         });
