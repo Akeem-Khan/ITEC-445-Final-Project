@@ -8,20 +8,12 @@ import {
     Conversation,
     ConversationList
 } from '@chatscope/chat-ui-kit-react';
-import PersonIcon from '@mui/icons-material/Person';
 import {
     Paper,
     Button,
-    Dialog,
-    DialogTitle,
-    List,
-    ListItem,
-    ListItemAvatar,
-    ListItemText,
     Toolbar,
     Box
 } from '@mui/material';
-import PropTypes from 'prop-types';
 import AddIcon from '@mui/icons-material/Add';
 import * as React from 'react';
 import { useState, useContext, useEffect } from 'react';
@@ -33,76 +25,18 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-
-
+import NewChatDialog from './new-chat-dialog.component';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteChatDialog from './delete-chat-dialog.component';
+import Stack from '@mui/material/Stack';
 const server = 'http://localhost:4000/'
-function NewChatDialog(props) {
-    const { onClose, selectedValue, open, users } = props;
-    const [search, setSearch] = React.useState('');
 
-    const handleClose = () => {
-        onClose(selectedValue);
-    };
-
-    const handleListItemClick = (value) => {
-        onClose(value);
-    };
-    const theme = createTheme();
-
-
-
-    return (
-        <ThemeProvider theme={theme}>
-            <Dialog onClose={handleClose} open={open}>
-                <DialogTitle>New Chat</DialogTitle>
-                <TextField
-                    margin="normal"
-                    fullWidth
-                    id="search"
-                    label="Search"
-                    name="search"
-                    autoFocus
-                    onChange={(e) => setSearch(e.target.value)}
-                    value={search}
-                />
-                <List>
-                    {users.map((user) => {
-                        return (
-                            <div>
-
-                                {(user.name.includes(search)) && (
-                                    < ListItem button onClick={() => handleListItemClick(user)} key={user.email}>
-                                        <ListItemAvatar>
-                                            <Avatar>
-                                                <PersonIcon />
-                                            </Avatar>
-                                        </ListItemAvatar>
-                                        <ListItemText primary={user.name} secondary={user.email} />
-                                    </ListItem>
-                                )}
-                            </div>
-                        )
-                    })}
-
-
-                </List>
-            </Dialog>
-        </ThemeProvider >
-
-    );
-
-}
-
-NewChatDialog.propTypes = {
-    onClose: PropTypes.func.isRequired,
-    open: PropTypes.bool.isRequired,
-    users: PropTypes.array.isRequired,
-};
 
 function Chat() {
     const [open, setOpen] = React.useState(false);
+    const [deleteOpen, setDeleteOpen] = React.useState(false);
+
     const { user } = useContext(AuthContext);
     const [chats, setChats] = useState([]);
     const { users } = useContext(UsersContext);
@@ -169,6 +103,11 @@ function Chat() {
         setOpen(true);
     };
 
+    const handleDeleteOpen = () => {
+        setDeleteOpen(true);
+        setSelectedChat(false);
+    };
+
     const getChats = () => {
 
 
@@ -203,6 +142,17 @@ function Chat() {
         }
     };
 
+    const deleteChat = (value) => {
+        setSelectedChat(false);
+        setDeleteOpen(false);
+        try {
+            socket.emit('delete-chat', value);
+            getChats()
+        } catch {
+
+        }
+    };
+
     return (
         <div className='container-fluid' >
             <Card className='mb-2'>
@@ -214,9 +164,15 @@ function Chat() {
                         <div className="col-4" >
                             <Paper elevation={1} style={{ height: '70vh' }}>
                                 <Toolbar>
-                                    <Button variant="contained" onClick={handleClickOpen}>New Chat</Button>
+                                    <Stack direction="row" spacing={1}>
+                                        <IconButton onClick={handleClickOpen} color='primary'>
+                                            <AddIcon />
+                                        </IconButton>
+                                        <IconButton onClick={handleDeleteOpen} color='error'>
+                                            <DeleteIcon />
+                                        </IconButton>
 
-                                </Toolbar>
+                                    </Stack>                                </Toolbar>
 
                                 <ConversationList>
 
@@ -291,6 +247,11 @@ function Chat() {
                     return listUser._id != user.id
                 })}
                 onClose={handleClose}
+            />
+            <DeleteChatDialog
+                open={deleteOpen}
+                chats={chats}
+                onClose={deleteChat}
             />
 
             <Toolbar></Toolbar>
