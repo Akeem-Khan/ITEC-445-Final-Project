@@ -53,13 +53,8 @@ io.on('connection', (socket) => { // socket object may be used to send specific 
 
             });
     });
+});
 
-    socket.on('delete-chat', chat => {
-        chatModel.findByIdAndRemove(chat._id)
-            .then(data => {
-                io.emit('message', null);
-            })
-            .catch(err => {
-            });
-    });
+app.get('/welcome', (req, res) => {
+    res.status(200).send({message: "Welcome to IST-Department's Backend API"})
 });
