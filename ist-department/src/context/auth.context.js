@@ -8,7 +8,7 @@ function AuthContextProvider(props) {
 
     async function getUser() {
         const userRes = await axios.get(
-            "http://localhost:4000/auth/loggedIn"
+            `${process.env.REACT_APP_API}/auth/loggedIn`
         );
         setUser(userRes.data);
     }

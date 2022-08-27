@@ -25,10 +25,10 @@ export default function FormDialog(props) {
 
   const fetchData = () =>{
     try{
-        axios.get('http://localhost:4000/appointment/getAllFacultyAdvisements').then((results)=>
+        axios.get(`${process.env.REACT_APP_API}/appointment/getAllFacultyAdvisements`).then((results)=>
         setAdvisements(results.data.result)
         )
-        axios.get('http://localhost:4000/auth/allFaculty').then((faculty)=>
+        axios.get(`${process.env.REACT_APP_API}/auth/allFaculty`).then((faculty)=>
         setAdvisors(faculty.data.result)
         )
         console.log('advisors', advisors)
@@ -57,7 +57,7 @@ export default function FormDialog(props) {
         console.log(booking);
         const studentBooking = {title: `Advisement with ${booking.owner.name}`,owner: user.id, startDate: booking.startDate, endDate: booking.endDate, location: booking.location,}
         const theData = {booking: studentBooking, advisement: {...booking, isBooked: true, advisementFor: user.id}, student: user, faculty: booking.owner}
-     const confirmedBooking = await axios.post('http://localhost:4000/appointment/confirmBooking', theData )
+     const confirmedBooking = await axios.post(`${process.env.REACT_APP_API}/appointment/confirmBooking`, theData )
      console.log(confirmedBooking)
      handleClose()
     } catch(e){

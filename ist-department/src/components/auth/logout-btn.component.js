@@ -10,7 +10,7 @@ function LogOutBtn() {
   const history = useHistory();
 
   async function logOut() {
-    await axios.get("http://localhost:4000/auth/logout");
+    await axios.get(`${process.env.REACT_APP_API}/auth/logout`);
     await getUser();
     history.push("/");
   }

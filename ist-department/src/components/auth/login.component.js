@@ -27,7 +27,7 @@ function Login() {
         password,
       };
 
-      await axios.post("http://localhost:4000/auth/login", loginData);
+      await axios.post(`${process.env.REACT_APP_API}/auth/login`, loginData);
       await getUser();
       history.push("/");
     } catch (err) {

@@ -113,7 +113,7 @@ export default class AppointmentFormContainerBasic extends Component {
 
   async  componentDidMount(){
         try{
-          const students = await axios.get('http://localhost:4000/auth/AllStudents');
+          const students = await axios.get(`${process.env.REACT_APP_API}/auth/AllStudents`);
           this.setState({students: students.data.result})
         } catch(e){
           console.log(e)

@@ -29,7 +29,7 @@ function Profile() {
     const forceUpdate = useForceUpdate();
 
     useEffect(() => {
-        axios.get('http://localhost:4000/notices/')
+        axios.get(`${process.env.REACT_APP_API}/notices/`)
             .then(response => {
                 setNotices(response.data);
             })
@@ -43,7 +43,7 @@ function Profile() {
             role: 'pending'
         };
 
-        axios.post('http://localhost:4000/auth/update/' + user.id, role)
+        axios.post(`${process.env.REACT_APP_API}/auth/update/${user.id}`, role)
             .then(res => {
                 getUser();
             })
@@ -59,7 +59,7 @@ function Profile() {
             role: 'student'
         };
 
-        axios.post('http://localhost:4000/auth/update/' + user.id, role)
+        axios.post(`${process.env.REACT_APP_API}/auth/update/${user.id}`, role)
             .then(res => {
                 getUser();
             })
@@ -75,7 +75,7 @@ function Profile() {
         notice.flagged.info = '';
         notice.flagged.by = '';
 
-        axios.post('http://localhost:4000/notices/update/' + notice._id, notice)
+        axios.post(`${process.env.REACT_APP_API}/notices/update/${notice._id}`, notice)
             .then(res => console.log(res.data));
 
         forceUpdate();
