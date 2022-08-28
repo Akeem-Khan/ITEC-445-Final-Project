@@ -153,7 +153,7 @@ class Calendar extends Component {
         const { user } = this.context 
         try{
           if(user.role === 'faculty'){
-            const appointments = await axios.get(`http://localhost:4000/appointment/getAllFacultyAppointments/${user.id}`)
+            const appointments = await axios.get(`${process.env.REACT_APP_API}/appointment/getAllFacultyAppointments/${user.id}`)
             const result = appointments.data.result.map((appt)=>{
               if(appt.isAdvisement){
                 if(appt.advisementFor){
@@ -173,7 +173,7 @@ class Calendar extends Component {
                   data: result
               });
           } else {
-            const appointments = await axios.get(`http://localhost:4000/appointment/getAllAppointmentByOwner/${user.id}`);
+            const appointments = await axios.get(`${process.env.REACT_APP_API}/appointment/getAllAppointmentByOwner/${user.id}`);
             console.log(appointments);
             this.setState({
               user: user,
@@ -221,7 +221,7 @@ class Calendar extends Component {
      async commitDeletedAppointment() {
        try{
         const {  deletedAppointmentId } = this.state;  
-         const result = await axios.delete(`http://localhost:4000/appointment/deleteAppointment/${deletedAppointmentId}`)
+         const result = await axios.delete(`${process.env.REACT_APP_API}/appointment/deleteAppointment/${deletedAppointmentId}`)
          console.log(result);
          } catch (err) {
              console.log('an Error occured', err)
@@ -260,7 +260,7 @@ class Calendar extends Component {
         if(added){
             try{
                 added.owner = this.state.user.id;
-                const result = await axios.post('http://localhost:4000/appointment/create', added)
+                const result = await axios.post(`${process.env.REACT_APP_API}/appointment/create`, added)
                 this.setState((state)=>{
                     let {data} = state;
                     const startingAddedId = data.length > 0 ? data[data.length - 1]._id + 1 : 0;
@@ -276,7 +276,7 @@ class Calendar extends Component {
         if(changed){
             try{
                 const _id = Object.keys(changed)[0];
-                const result = await axios.put('http://localhost:4000/appointment/updateAppointment', changed[_id])
+                const result = await axios.put(`${process.env.REACT_APP_API}/appointment/updateAppointment`, changed[_id])
                 console.log(result);
                } catch (err) {
                    console.log('an Error occured', err)

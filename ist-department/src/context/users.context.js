@@ -1,6 +1,5 @@
 import axios from "axios";
 import React, { createContext, useEffect, useState } from "react";
-const server = 'http://localhost:4000/'
 
 const UsersContext = createContext();
 
@@ -8,7 +7,7 @@ function UsersContextProvider(props) {
     const [users, setUsers] = useState([]);
     
     async function getUsers() {
-        const usersRes = await axios.get(server + 'auth/all')
+        const usersRes = await axios.get(`${process.env.REACT_APP_API}/auth/all`)
         setUsers(usersRes.data);
     }
 

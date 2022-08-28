@@ -13,7 +13,7 @@ dotenv.config();
 
 axios.defaults.withCredentials = true;
 
-const SERVER = "http://127.0.0.1:4000";
+const SERVER = process.env.REACT_APP_API;
 class App extends Component {
 
   render() {

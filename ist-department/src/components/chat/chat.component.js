@@ -30,7 +30,6 @@ import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DeleteChatDialog from './delete-chat-dialog.component';
 import Stack from '@mui/material/Stack';
-const server = 'http://localhost:4000/'
 
 
 function Chat() {
@@ -45,7 +44,7 @@ function Chat() {
     const [selectedValue, setSelectedValue] = useState(null);
 
     socket.on('message', record => {
-        axios.get('http://localhost:4000/chat/all/user/' + user.id)
+        axios.get(`${process.env.REACT_APP_API}/chat/all/user/${user.id}`)
             .then(response => {
                 let chats = getOtherUsers(response.data)
                 setChats(chats);
@@ -111,7 +110,7 @@ function Chat() {
     const getChats = () => {
 
 
-        axios.get('http://localhost:4000/chat/all/user/' + user.id)
+        axios.get(`${process.env.REACT_APP_API}/chat/all/user/${user.id}`)
             .then(response => {
                 let chats = getOtherUsers(response.data)
                 setChats(chats);
@@ -123,7 +122,7 @@ function Chat() {
     }
 
     useEffect(() => {
-        const usersRes = axios.get(server + 'auth/all').then(usersRes => {
+        const usersRes = axios.get(`${process.env.REACT_APP_API}/auth/all`).then(usersRes => {
         })
 
 
