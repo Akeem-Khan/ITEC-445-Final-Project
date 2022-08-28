@@ -135,7 +135,9 @@ function Navbar() {
 
                             </Menu>
                         </Box>
-                        <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+                        <Avatar  sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} alt="IST" src={logo} />
+
+                        {/* <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} /> */}
                         <Typography
                             variant="h5"
                             noWrap
@@ -152,7 +154,7 @@ function Navbar() {
                                 textDecoration: 'none',
                             }}
                         >
-                            LOGO
+                            IST Department
                         </Typography>
                         <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
 
