@@ -122,20 +122,71 @@ function Navbar() {
                                 }}
                             >
 
+                                {user !== undefined && (
+                                    <>
+                                        {user.loggedIn === false && (
 
-                                <Link to="/">
+
+                                            <>
+                                                <MenuItem onClick={handleCloseNavMenu} component={RouterLink} to="/register">
+                                                    <Typography textAlign="center">Register</Typography>
+                                                </MenuItem>
+                                                <MenuItem onClick={handleCloseNavMenu} component={RouterLink} to="/login">
+                                                    <Typography textAlign="center">Log in</Typography>
+                                                </MenuItem>
+                                            </>
+                                        )}
+
+                                        {((user.role === 'student_leader') || (user.role === 'faculty')) && (
+                                            <MenuItem onClick={handleCloseNavMenu} component={RouterLink} to="/create">
+                                                <Typography textAlign="center">Create Notice</Typography>
+                                            </MenuItem>
+
+                                        )}
+
+                                        {user.role === 'faculty' && (
+                                            <MenuItem onClick={handleCloseNavMenu} component={RouterLink} to="/confirm">
+                                                <Typography textAlign="center"> Confirm Student Leader</Typography>
+                                            </MenuItem>
+                                        )}
+
+                                        {user.loggedIn === true && (
+                                            <>
+                                                <MenuItem onClick={handleCloseNavMenu} component={RouterLink} to="/cal">
+                                                    <Typography textAlign="center"> Calendar</Typography>
+                                                </MenuItem>
+                                                {user.role != 'faculty' &&
+                                                    <MenuItem onClick={handleModalOpen}>
+                                                        <Typography textAlign="center"> Book Advisement</Typography>
+                                                    </MenuItem>
+
+                                                }
+                                                <MenuItem onClick={handleCloseNavMenu} component={RouterLink} to="/chat">
+                                                    <Typography textAlign="center"> Chat</Typography>
+                                                </MenuItem>
+                                                <MenuItem onClick={handleCloseNavMenu} to="/profile" component={RouterLink}>
+                                                    <Typography textAlign="center">My Profile</Typography>
+                                                </MenuItem>
+                                                <MenuItem onClick={logOut}>
+                                                    <Typography textAlign="center">Log Out</Typography>
+                                                </MenuItem>
+                                            </>
+                                        )}
+
+                                    </>
+                                )}
+
+
+                                {/* <Link to="/">
                                     <MenuItem onClick={handleCloseNavMenu}>
                                         <Typography textAlign="center">Notices</Typography>
                                     </MenuItem>
 
-                                </Link>
-
-
-
+                                </Link> */}
 
                             </Menu>
                         </Box>
-                        <Avatar  sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} alt="IST" src={logo} />
+                        <Avatar sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} alt="IST" src={logo} />
 
                         {/* <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} /> */}
                         <Typography
@@ -217,15 +268,15 @@ function Navbar() {
                                             >
                                                 Calendar
                                             </Button>
-                                            {user.role != 'faculty'  &&
-                                            <Button
-                                                
+                                            {user.role != 'faculty' &&
+                                                <Button
 
-                                                onClick={handleModalOpen}
-                                                sx={{ my: 2, color: 'white', display: 'block' }}
-                                            >
-                                                Book Advisement
-                                            </Button>
+
+                                                    onClick={handleModalOpen}
+                                                    sx={{ my: 2, color: 'white', display: 'block' }}
+                                                >
+                                                    Book Advisement
+                                                </Button>
                                             }
                                             <Button
                                                 component={RouterLink} to="/chat"
@@ -240,6 +291,7 @@ function Navbar() {
                                 </>
                             )}
                         </Box>
+
 
                         <Box sx={{ flexGrow: 0 }}>
                             {user !== undefined && (
