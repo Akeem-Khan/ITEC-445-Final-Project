@@ -2,6 +2,7 @@ const AppointmentModel =  require('../models/appointment.model');
 const UserModel = require('../models/user.model')
 const sgMail = require('@sendgrid/mail')
 const format = require('date-fns/format')
+const difference = require('date-fns/differenceInMinutes')
 
 const createAppointment = async (req, res) => {
     const appointment = req.body;
@@ -61,8 +62,19 @@ const updateAppointment = async (req, res) => {
 }
 
 const deleteAppointment = async (req, res) => {
-    try {
-        const result = await AppointmentModel.findByIdAndDelete(req.params.id);
+    try { 
+        const result = await AppointmentModel.findByIdAndDelete(req.params.id, {useFindAndModify: false});
+        const app = await AppointmentModel.find({advisementFor: result.owner});
+        let promises = []
+        app.map((appt)=> {
+            if(difference( new Date(appt.startDate), new Date(result.startDate)) == 0){
+                appt.advisementFor = null;
+                appt.isBooked = false;
+                promises.push(appt.save());
+            }
+        })
+       await Promise.all(promises);
+       
         res.status(200).json({result: result, message: 'Appointment deleted succesfully'});
     } catch(err) {
         res.status(400).send(err.message);
