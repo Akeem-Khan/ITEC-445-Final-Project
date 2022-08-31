@@ -107,6 +107,24 @@ function Profile() {
                                 secondary='Role'
                             />
                         </ListItem>
+
+                        {user !== undefined && (
+                            <>
+                            {user.role === "student" && (
+                                <ListItem>
+                                    Do you want to apply for Student Leader? &nbsp;
+                                    <Button size="small" onClick={apply}>Apply</Button>
+                                </ListItem>
+                            )}
+
+                            {(user.role === "pending" || user.role === "student_leader") && (
+                                <ListItem>
+                                    Do you want to revert your role to Student? &nbsp;
+                                    <Button size="small" onClick={revert} color="error">Revert</Button>
+                                </ListItem>
+                            )}
+                            </>
+                        )}
                     </List>
 
 
