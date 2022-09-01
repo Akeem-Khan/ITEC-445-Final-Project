@@ -48,10 +48,10 @@ const register = async (req, res) => {
             subject: "ACCOUNT ACTIVATION LINK",
             html: `
                       <h1>Please use the following link to activate your account</h1>
-                      <p>http://localhost:3000/activate/${token}</p>
+                      <p>${process.env.CLIENT_URL}/activate/${token}</p>
                       <hr />
                       <p>This email may contain sensitive information</p>
-                      <p>http://localhost:3000</p>
+                      <p>${process.env.CLIENT_URL}</p>
                   `,
         };
 
