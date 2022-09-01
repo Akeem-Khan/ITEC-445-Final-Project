@@ -98,7 +98,7 @@ function Profile() {
                             </ListItemIcon>
                             <ListItemText
                                 primary={user.name}
-                                secondary='E-mail'
+                                secondary='User'
                             />
                         </ListItem>
                         <ListItem>
