@@ -18,6 +18,9 @@ import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import BadgeIcon from '@mui/icons-material/Badge';
 import EmailIcon from '@mui/icons-material/Email';
+
+import PersonIcon from '@mui/icons-material/Person';
+
 function useForceUpdate() {
     const [value, setValue] = useState(0); // integer state
     return () => setValue(value => value + 1); // update the state to force render
@@ -89,6 +92,15 @@ function Profile() {
                         User Info
                     </Typography>
                     <List>
+                    <ListItem>
+                            <ListItemIcon>
+                                <PersonIcon />
+                            </ListItemIcon>
+                            <ListItemText
+                                primary={user.name}
+                                secondary='E-mail'
+                            />
+                        </ListItem>
                         <ListItem>
                             <ListItemIcon>
                                 <EmailIcon />
